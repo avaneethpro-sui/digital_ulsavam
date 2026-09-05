@@ -46,6 +46,7 @@ Visit <http://localhost:5173>. The API seeds the landing-page content into Mongo
 
 - The React landing page lives in `src/`; the MongoDB content API lives in `server/`.
 - The older HTML pages remain available as prototype screens while they are migrated.
+- Use the React `/login` and `/register` routes for accounts; the legacy standalone auth pages redirect there so accounts are stored in MongoDB.
 - Forms, authentication, bookings, bids, and dashboards still use demo client-side behavior; only landing-page content is currently database-backed.
 - Some pages load fonts and icons from external CDNs, so an internet connection improves the local preview.
 
