@@ -1,0 +1,984 @@
+<!-- ============================================================
+     REGISTER.HTML  –  Updated with Elephant Owner category
+     ============================================================ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Utsavam Events — Registration Portal</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="ulsav managment.css">
+
+  <style>
+    /* (styles remain unchanged from previous version) */
+    :root {
+      --ivory: #F3E9D8;
+      --ivory-dim: #E8DBC3;
+      --maroon: #5C1A21;
+      --maroon-deep: #43121A;
+      --vermillion: #D8531F;
+      --gold: #B8862F;
+      --gold-light: #E3C173;
+      --bark: #1B0F0D;
+      --bark-soft: #241511;
+      --ink: #221410;
+      --line: rgba(184, 134, 47, 0.35);
+      --glass-bg: rgba(255, 255, 255, 0.25);
+      --glass-border: rgba(255, 255, 255, 0.4);
+      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Work Sans', sans-serif;
+      background: linear-gradient(135deg, #f7f2ea, #e8ddcc);
+      color: var(--ivory);
+      overflow-x: hidden;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    h1, h2, h3, .brand {
+      font-family: 'Marcellus', serif;
+      font-weight: 400;
+    }
+
+    .glass-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(2px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .auth-page {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+
+    .auth-visual {
+      flex: 1;
+      position: relative;
+      background: radial-gradient(ellipse at 30% 20%, #3a1c14, var(--bark));
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 40px;
+      border-radius: 0 24px 24px 0;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      border-right: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(5px);
+    }
+
+    #loginStars, #loginEmbers {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .star {
+      position: absolute;
+      width: 2px; height: 2px;
+      background: var(--gold-light);
+      border-radius: 50%;
+      opacity: 0.3;
+      animation: pulseStar 3s infinite ease-in-out;
+    }
+
+    @keyframes pulseStar {
+      0%, 100% { opacity: 0.2; transform: scale(0.8); }
+      50% { opacity: 0.9; transform: scale(1.4); }
+    }
+
+    .ember {
+      position: absolute;
+      bottom: -10px;
+      width: 4px; height: 4px;
+      background: var(--vermillion);
+      border-radius: 50%;
+      filter: blur(1px);
+      box-shadow: 0 0 8px var(--vermillion);
+      animation: riseEmber linear infinite;
+    }
+
+    @keyframes riseEmber {
+      0% { transform: translateY(0) translateX(0); opacity: 0; }
+      20% { opacity: 0.8; }
+      100% { transform: translateY(-100vh) translateX(var(--drift)); opacity: 0; }
+    }
+
+    .p-layer {
+      position: absolute;
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0.25;
+      will-change: transform;
+      transition: transform 0.2s ease-out;
+    }
+    .p-layer-1 { top: 15%; right: 10%; width: 120px; }
+    .p-layer-2 { top: 55%; left: 8%; width: 180px; }
+
+    .brand {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--gold-light);
+      font-size: 2rem;
+      transition: transform 0.3s;
+    }
+    .brand:hover { transform: translateY(-3px); }
+
+    .lamp-icon {
+      width: 32px;
+      height: 32px;
+    }
+
+    #flame {
+      transform-origin: center bottom;
+      animation: flicker 2s infinite alternate;
+    }
+
+    @keyframes flicker {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.1, 0.95); }
+    }
+
+    .auth-quote {
+      position: relative;
+      z-index: 3;
+      max-width: 480px;
+    }
+    .auth-quote .big {
+      font-family: 'Marcellus', serif;
+      font-size: 2.2rem;
+      line-height: 1.2;
+      color: var(--gold-light);
+      margin-bottom: 12px;
+    }
+    .auth-quote .small {
+      font-size: 1.05rem;
+      color: var(--ivory-dim);
+      line-height: 1.5;
+    }
+
+    .auth-form-side {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(20px) saturate(160%);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      position: relative;
+      z-index: 4;
+      border-radius: 24px 0 0 24px;
+      border-left: 1px solid rgba(255,255,255,0.5);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    }
+
+    .auth-box {
+      width: 100%;
+      max-width: 440px;
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 40px 36px;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      border: 1px solid rgba(255,255,255,0.8);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: cardAppear 0.7s cubic-bezier(0.22, 0.7, 0.2, 1) both;
+    }
+    .auth-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+    }
+
+    @keyframes cardAppear {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    input, select, button {
+      font-family: 'Work Sans', sans-serif;
+    }
+
+    .input-with-btn { display: flex; gap: 8px; }
+    .input-with-btn input { flex: 1; }
+    .btn-verify { padding: 0 16px; white-space: nowrap; font-size: 0.85rem; }
+    .verification-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 600; margin-top: 6px; color: var(--maroon); }
+    .otp-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(27, 15, 13, 0.6); align-items: center; justify-content: center; z-index: 1000; }
+    .otp-modal.active { display: flex; }
+    .otp-card { background: var(--ivory); border: 1px solid var(--line); padding: 24px; border-radius: 8px; max-width: 360px; width: 90%; box-shadow: 0 10px 25px rgba(0,0,0,0.25); color: var(--ink); backdrop-filter: blur(10px); }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .field { animation: fadeUp 0.5s ease both; }
+    .field:nth-child(1) { animation-delay: 0.1s; }
+    .field:nth-child(2) { animation-delay: 0.2s; }
+    .field:nth-child(3) { animation-delay: 0.3s; }
+    .field:nth-child(4) { animation-delay: 0.4s; }
+    .field:nth-child(5) { animation-delay: 0.5s; }
+    .field:nth-child(6) { animation-delay: 0.6s; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .field { margin-bottom: 18px; }
+    .field label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+    .field input, .field select {
+      width: 100%;
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(166, 124, 46, 0.3);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: var(--ink);
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .field input:focus, .field select:focus {
+      border-color: var(--gold-light);
+      box-shadow: 0 0 0 3px rgba(212, 175, 92, 0.2);
+      outline: none;
+      background: rgba(255,255,255,0.9);
+    }
+    .field.error input, .field.error select {
+      border-color: #c0392b;
+      box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.15);
+    }
+    .err-msg { display: none; font-size: 0.75rem; color: #c0392b; margin-top: 4px; }
+    .field.error .err-msg { display: block; }
+    .shake { animation: shake 0.4s ease; }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .btn-primary {
+      background: var(--maroon);
+      color: var(--ivory);
+    }
+    .btn-primary:hover {
+      background: var(--maroon-deep);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(92, 26, 33, 0.3);
+    }
+    .btn-secondary {
+      background: var(--gold);
+      color: white;
+    }
+    .btn-secondary:hover {
+      background: var(--gold-light);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(184, 134, 47, 0.3);
+    }
+    .btn-block { width: 100%; }
+
+    .auth-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      background: rgba(255,255,255,0.4);
+      padding: 4px;
+      border-radius: 12px;
+    }
+    .auth-tab {
+      flex: 1;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: transparent;
+      color: var(--ink);
+    }
+    .auth-tab.active {
+      background: var(--maroon);
+      color: var(--ivory);
+      box-shadow: 0 2px 8px rgba(92, 26, 33, 0.2);
+    }
+    .auth-tab:not(.active):hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    .auth-switch {
+      text-align: center;
+      font-size: 0.85rem;
+      margin-top: 16px;
+      color: var(--bark-soft);
+    }
+    .auth-switch a {
+      color: var(--maroon);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .auth-switch a:hover { text-decoration: underline; }
+
+    .lead { font-size: 0.95rem; color: var(--bark-soft); margin-bottom: 16px; }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 16px;
+      color: var(--maroon);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.85rem;
+    }
+    .back-link:hover { text-decoration: underline; }
+
+    .toast-stack {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 360px;
+    }
+    .toast {
+      background: rgba(30, 20, 10, 0.92);
+      backdrop-filter: blur(10px);
+      color: var(--ivory);
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      transform: translateX(120%);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .toast.show { transform: translateX(0); }
+    .toast.error { border-color: #c0392b; }
+
+    @media (max-width: 880px) {
+      .auth-page { flex-direction: column; }
+      .auth-visual { min-height: 280px; border-radius: 0 0 24px 24px; }
+      .auth-form-side { border-radius: 24px 24px 0 0; }
+      .auth-box { padding: 30px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="glass-overlay"></div>
+
+  <div class="auth-page">
+
+    <!-- LEFT PANEL -->
+    <div class="auth-visual">
+      <div id="loginStars"></div>
+      <div id="loginEmbers"></div>
+
+      <svg class="p-layer p-layer-1" data-speed="-0.12" data-depth="0.03" viewBox="0 0 100 100" fill="currentColor">
+        <circle cx="50" cy="50" r="40" stroke="var(--gold-light)" stroke-width="2" fill="none" />
+      </svg>
+      <svg class="p-layer p-layer-2" data-speed="0.18" data-depth="0.05" viewBox="0 0 100 100" fill="currentColor">
+        <polygon points="50,10 90,90 10,90" stroke="var(--gold)" stroke-width="1.5" fill="none"/>
+      </svg>
+
+      <a href="Ulsav.html" class="brand">
+        <svg class="lamp-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 44C22 44 14 38 14 32H50C50 38 42 44 32 44Z" fill="var(--gold)"/>
+          <path d="M30 44H34V56H30V44Z" fill="var(--maroon)"/>
+          <path d="M22 56H42V60H22V56Z" fill="var(--maroon)"/>
+          <path id="flame" d="M32 8C32 8 24 20 24 26C24 30.4 27.6 34 32 34C36.4 34 40 30.4 40 26C40 20 32 8 32 8Z" fill="var(--vermillion)"/>
+        </svg>
+        <span>Ulsav</span>
+      </a>
+
+      <div class="auth-quote">
+        <p class="big">Kerala's Premier Festival & Cultural Event Network.</p>
+        <p class="small">Connecting traditional artists, equipment providers, and grand celebrations across all 14 districts.</p>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL: Registration Form -->
+    <div class="auth-form-side">
+      <div class="auth-box">
+
+        <a href="Ulsav.html" class="back-link">← Back to home</a>
+        <h2>Create your account</h2>
+        <p class="lead" id="role-note">Book festival programs and rent equipment across Kerala.</p>
+
+        <div class="auth-tabs" role="group" aria-label="Account type">
+          <button type="button" id="role-user" class="auth-tab active">User</button>
+          <button type="button" id="role-artist" class="auth-tab">Collaborator</button>
+        </div>
+
+        <form id="register-form" class="auth-form active" novalidate>
+
+          <input type="hidden" id="account-role" name="account-role" value="user">
+
+          <div class="field" id="box-name">
+            <label for="fullname">Full name</label>
+            <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" autocomplete="name" required>
+            <span class="err-msg">Please enter your full name.</span>
+          </div>
+
+          <div class="field" id="box-email">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required>
+            <span class="err-msg">Enter a valid email address.</span>
+          </div>
+
+          <div class="field" id="box-phone">
+            <label for="phone">Phone number</label>
+            <input type="tel" id="phone" name="phone" placeholder="10-digit phone number" autocomplete="tel" required pattern="[0-9]{10}">
+            <span class="err-msg">Enter a valid 10-digit phone number.</span>
+          </div>
+
+          <div class="field" id="box-password">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Create a password" autocomplete="new-password" required minlength="6">
+            <span class="err-msg">Password must be at least 6 characters.</span>
+          </div>
+
+          <div class="field" id="box-confirm">
+            <label for="confirm-password">Confirm password</label>
+            <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm your password" autocomplete="new-password" required>
+            <span class="err-msg">Passwords don't match.</span>
+          </div>
+
+          <!-- Artist / Collaborator fields -->
+          <div id="artist-fields" style="display: none;">
+
+            <div class="field" id="box-category">
+              <label for="category">Category</label>
+              <select id="category" name="category">
+                <option value="Performing Artist">Performing Artist</option>
+                <option value="Equipment Owner">Equipment Owner</option>
+                <option value="Both">Both (Artist & Equipment)</option>
+                <option value="Elephant Owner">Elephant Owner</option>
+              </select>
+            </div>
+
+            <div class="field" id="box-district">
+              <label for="district">District</label>
+              <select id="district" name="district">
+                <option value="">Select your district</option>
+                <option>Thiruvananthapuram</option>
+                <option>Kollam</option>
+                <option>Pathanamthitta</option>
+                <option>Alappuzha</option>
+                <option>Kottayam</option>
+                <option>Idukki</option>
+                <option>Ernakulam</option>
+                <option>Thrissur</option>
+                <option>Palakkad</option>
+                <option>Malappuram</option>
+                <option>Kozhikode</option>
+                <option>Wayanad</option>
+                <option>Kannur</option>
+                <option>Kasaragod</option>
+              </select>
+              <span class="err-msg">Select the district you operate in.</span>
+            </div>
+
+            <div class="field" id="box-specialization">
+              <label for="specialization">Specialization / Equipment Details</label>
+              <input type="text" id="specialization" name="specialization" placeholder="e.g. Chenda melam, Kathakali, sound system, panthal, Elephant pageantry">
+            </div>
+
+            <div class="field" id="box-aadhaar">
+              <label for="aadhaar">Aadhaar Number (Identity Verification)</label>
+              <div class="input-with-btn">
+                <input type="text" id="aadhaar" name="aadhaar" placeholder="12-digit Aadhaar number" maxlength="14">
+                <button type="button" id="btn-send-otp" class="btn btn-secondary btn-verify">Verify OTP</button>
+              </div>
+              <input type="hidden" id="aadhaar-verified" value="false">
+              <div id="aadhaar-status"></div>
+              <span class="err-msg">Valid, verified 12-digit Aadhaar required for collaborators.</span>
+            </div>
+
+          </div>
+
+          <button type="submit" id="btn-submit" class="btn btn-primary btn-block">Create Account</button>
+
+          <p class="auth-switch">
+            Already have an account? <a href="Ulsav login.html">Log in</a>
+          </p>
+
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- OTP Modal -->
+  <div class="otp-modal" id="otpModal">
+    <div class="otp-card">
+      <h3>Enter Verification OTP</h3>
+      <p style="font-size: 0.85rem; color: var(--bark-soft); margin-bottom: 16px;">
+        A 6-digit OTP has been sent to the mobile number registered with Aadhaar <strong id="masked-aadhaar-display"></strong>.
+      </p>
+      <div class="field" id="box-otp">
+        <input type="text" id="otp-input" placeholder="Enter 6-digit OTP" maxlength="6">
+        <span class="err-msg">Enter a valid 6-digit OTP.</span>
+      </div>
+      <div style="display: flex; gap: 8px; margin-top: 16px;">
+        <button type="button" id="btn-confirm-otp" class="btn btn-primary" style="flex:1;">Confirm</button>
+        <button type="button" id="btn-cancel-otp" class="btn btn-secondary" style="flex:1;">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-stack" id="toastStack"></div>
+
+  <script>
+    (function() {
+      // ---- Visual Effects ----
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      const layers = Array.prototype.slice.call(document.querySelectorAll('.p-layer[data-speed]'));
+      function onScrollParallax() {
+        if (reduceMotion) return;
+        const y = window.scrollY;
+        layers.forEach(function(l) {
+          const speed = parseFloat(l.getAttribute('data-speed'));
+          l.style.transform = 'translateY(' + (y * speed) + 'px)';
+        });
+      }
+      window.addEventListener('scroll', onScrollParallax, { passive: true });
+      onScrollParallax();
+
+      document.addEventListener('mousemove', function(e) {
+        if (reduceMotion) return;
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+        const offsetX = (e.clientX - centerX) / centerX;
+        const offsetY = (e.clientY - centerY) / centerY;
+        layers.forEach(function(l) {
+          const depth = parseFloat(l.getAttribute('data-depth')) || 0.02;
+          const moveX = offsetX * 80 * depth;
+          const moveY = offsetY * 80 * depth;
+          l.style.transform = 'translate(' + moveX + 'px, ' + moveY + 'px)';
+        });
+      });
+
+      const starsLayer = document.getElementById('loginStars');
+      if (starsLayer) {
+        for (let i = 0; i < 28; i++) {
+          const s = document.createElement('div');
+          s.className = 'star';
+          s.style.left = (Math.random() * 100) + '%';
+          s.style.top = (Math.random() * 100) + '%';
+          s.style.animationDelay = (Math.random() * 3.5) + 's';
+          starsLayer.appendChild(s);
+        }
+      }
+
+      const embersLayer = document.getElementById('loginEmbers');
+      if (embersLayer && !reduceMotion) {
+        for (let j = 0; j < 14; j++) {
+          const e = document.createElement('div');
+          e.className = 'ember';
+          e.style.left = (Math.random() * 100) + '%';
+          e.style.setProperty('--drift', (Math.random() * 50 - 25) + 'px');
+          e.style.animationDuration = (5 + Math.random() * 5) + 's';
+          e.style.animationDelay = (Math.random() * 6) + 's';
+          embersLayer.appendChild(e);
+        }
+      }
+
+      const flame = document.getElementById('flame');
+      function triggerFlameEffect() {
+        if (!reduceMotion && flame) {
+          flame.style.transition = 'transform .5s ease';
+          flame.style.transform = 'scale(1.25)';
+          setTimeout(function() { flame.style.transform = 'scale(1)'; }, 500);
+        }
+      }
+
+      // ---- API Config (mock) ----
+      const API_CONFIG = {
+        USE_MOCK_API: true,
+        ENDPOINTS: {
+          SEND_AADHAAR_OTP: '/api/v1/auth/aadhaar/send-otp',
+          VERIFY_AADHAAR_OTP: '/api/v1/auth/aadhaar/verify-otp',
+          REGISTER: '/api/v1/auth/register'
+        }
+      };
+
+      // ---- DOM refs ----
+      const form = document.getElementById('register-form');
+      const roleUserBtn = document.getElementById('role-user');
+      const roleArtistBtn = document.getElementById('role-artist');
+      const roleInput = document.getElementById('account-role');
+      const roleNote = document.getElementById('role-note');
+      const artistFields = document.getElementById('artist-fields');
+      const submitBtn = document.getElementById('btn-submit');
+
+      const aadhaarInput = document.getElementById('aadhaar');
+      const sendOtpBtn = document.getElementById('btn-send-otp');
+      const aadhaarVerifiedInput = document.getElementById('aadhaar-verified');
+      const aadhaarStatus = document.getElementById('aadhaar-status');
+      const otpModal = document.getElementById('otpModal');
+      const otpInput = document.getElementById('otp-input');
+      const confirmOtpBtn = document.getElementById('btn-confirm-otp');
+      const cancelOtpBtn = document.getElementById('btn-cancel-otp');
+      const maskedAadhaarDisplay = document.getElementById('masked-aadhaar-display');
+
+      let currentAadhaarTxnId = null;
+
+      // ---- Auto-format Aadhaar ----
+      aadhaarInput.addEventListener('input', function(e) {
+        let raw = e.target.value.replace(/\D/g, '').slice(0, 12);
+        e.target.value = raw.replace(/(\d{4})(?=\d)/g, '$1-');
+        if (aadhaarVerifiedInput.value === 'true') {
+          aadhaarVerifiedInput.value = 'false';
+          aadhaarStatus.innerHTML = '';
+          sendOtpBtn.disabled = false;
+          sendOtpBtn.innerText = 'Verify OTP';
+          currentAadhaarTxnId = null;
+        }
+      });
+
+      function setInvalid(id, isInvalid) {
+        const field = document.getElementById(id);
+        if (field) {
+          field.classList.toggle('error', isInvalid);
+          if (isInvalid) {
+            field.classList.add('shake');
+            setTimeout(() => field.classList.remove('shake'), 400);
+          }
+        }
+      }
+
+      // ---- Role switcher ----
+      function setRole(role) {
+        roleInput.value = role;
+        const isArtist = role === 'artist';
+
+        roleUserBtn.classList.toggle('active', !isArtist);
+        roleArtistBtn.classList.toggle('active', isArtist);
+
+        artistFields.style.display = isArtist ? 'block' : 'none';
+        roleNote.textContent = isArtist
+          ? 'List your act, equipment, or elephants and take bookings across districts.'
+          : 'Book festival programs and rent equipment across Kerala.';
+
+        if (!isArtist) {
+          setInvalid('box-district', false);
+          setInvalid('box-aadhaar', false);
+        }
+      }
+
+      roleUserBtn.addEventListener('click', () => setRole('user'));
+      roleArtistBtn.addEventListener('click', () => setRole('artist'));
+
+      // ---- Toast ----
+      function showToast(message, isError = false) {
+        const stack = document.getElementById('toastStack');
+        if (!stack) return;
+        const toast = document.createElement('div');
+        toast.className = 'toast' + (isError ? ' error' : '');
+        toast.innerText = message;
+        stack.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 100);
+        setTimeout(() => {
+          toast.classList.remove('show');
+          setTimeout(() => toast.remove(), 400);
+        }, 3000);
+      }
+
+      // ---- OTP Send ----
+      sendOtpBtn.addEventListener('click', async function() {
+        const rawNum = aadhaarInput.value.replace(/\D/g, '');
+        if (rawNum.length !== 12) {
+          setInvalid('box-aadhaar', true);
+          showToast('Enter a valid 12-digit Aadhaar number', true);
+          return;
+        }
+        setInvalid('box-aadhaar', false);
+
+        sendOtpBtn.disabled = true;
+        sendOtpBtn.innerText = 'Sending...';
+
+        try {
+          if (API_CONFIG.USE_MOCK_API) {
+            await new Promise(r => setTimeout(r, 800));
+            currentAadhaarTxnId = 'TXN_MOCK_' + Date.now();
+          } else {
+            const res = await fetch(API_CONFIG.ENDPOINTS.SEND_AADHAAR_OTP, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ aadhaarNumber: rawNum })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || 'Failed to send OTP.');
+            currentAadhaarTxnId = data.transactionId;
+          }
+
+          maskedAadhaarDisplay.innerText = 'XXXX-XXXX-' + rawNum.slice(-4);
+          otpModal.classList.add('active');
+        } catch (err) {
+          showToast(err.message, true);
+        } finally {
+          sendOtpBtn.disabled = false;
+          sendOtpBtn.innerText = 'Verify OTP';
+        }
+      });
+
+      cancelOtpBtn.addEventListener('click', function() {
+        otpModal.classList.remove('active');
+        otpInput.value = '';
+      });
+
+      // ---- OTP Verify ----
+      confirmOtpBtn.addEventListener('click', async function() {
+        const otpVal = otpInput.value.trim();
+        if (otpVal.length !== 6 || !/^\d+$/.test(otpVal)) {
+          setInvalid('box-otp', true);
+          return;
+        }
+        setInvalid('box-otp', false);
+
+        confirmOtpBtn.disabled = true;
+        confirmOtpBtn.innerText = 'Verifying...';
+
+        try {
+          if (API_CONFIG.USE_MOCK_API) {
+            await new Promise(r => setTimeout(r, 800));
+          } else {
+            const res = await fetch(API_CONFIG.ENDPOINTS.VERIFY_AADHAAR_OTP, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                transactionId: currentAadhaarTxnId,
+                otp: otpVal,
+                aadhaarNumber: aadhaarInput.value.replace(/\D/g, '')
+              })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || 'Invalid OTP.');
+          }
+
+          aadhaarVerifiedInput.value = 'true';
+          aadhaarStatus.innerHTML = '<span class="verification-badge">✓ Aadhaar Verified</span>';
+          sendOtpBtn.disabled = true;
+          sendOtpBtn.innerText = 'Verified';
+
+          otpModal.classList.remove('active');
+          otpInput.value = '';
+          showToast('Aadhaar identity successfully verified.');
+        } catch (err) {
+          showToast(err.message, true);
+        } finally {
+          confirmOtpBtn.disabled = false;
+          confirmOtpBtn.innerText = 'Confirm';
+        }
+      });
+
+      // ---- Helper: add event to localStorage ----
+      function addEventToStore(eventData) {
+        const STORAGE_KEY = 'pooramEvents';
+        let events = [];
+        try {
+          const stored = localStorage.getItem(STORAGE_KEY);
+          if (stored) events = JSON.parse(stored);
+        } catch (_) {}
+        const existingIndex = events.findIndex(e => e.email === eventData.email);
+        if (existingIndex !== -1) {
+          events[existingIndex] = { ...events[existingIndex], ...eventData };
+        } else {
+          events.push(eventData);
+        }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
+      }
+
+      // ---- Category to marketplace category mapping ----
+      function mapProfessionToEventCategory(profession) {
+        const map = {
+          'Performing Artist': 'melam',
+          'Equipment Owner': 'corporate',
+          'Both': 'melam',
+          'Elephant Owner': 'pooram'
+        };
+        return map[profession] || 'melam';
+      }
+
+      // ---- Form Submit ----
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        triggerFlameEffect();
+
+        const isArtist = roleInput.value === 'artist';
+        const fullname = document.getElementById('fullname').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const password = document.getElementById('password').value;
+        const confirm = document.getElementById('confirm-password').value;
+        const district = document.getElementById('district').value;
+        const specialization = document.getElementById('specialization').value.trim();
+        const category = document.getElementById('category').value;
+        const aadhaarRaw = aadhaarInput.value.replace(/\D/g, '');
+        const isAadhaarVerified = aadhaarVerifiedInput.value === 'true';
+
+        const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        const phoneOk = /^[0-9]{10}$/.test(phone);
+        const districtOk = !isArtist || district !== '';
+        const aadhaarOk = !isArtist || (aadhaarRaw.length === 12 && isAadhaarVerified);
+
+        setInvalid('box-name', fullname.length === 0);
+        setInvalid('box-email', !emailOk);
+        setInvalid('box-phone', !phoneOk);
+        setInvalid('box-password', password.length < 6);
+        setInvalid('box-confirm', confirm !== password || confirm.length === 0);
+
+        if (isArtist) {
+          setInvalid('box-district', !districtOk);
+          setInvalid('box-aadhaar', !aadhaarOk);
+        }
+
+        const allValid = fullname && emailOk && phoneOk && password.length >= 6 && confirm === password && districtOk && aadhaarOk;
+
+        if (!allValid) {
+          if (isArtist && !isAadhaarVerified) {
+            showToast('Please complete Aadhaar OTP verification.', true);
+          } else {
+            showToast('Please fix the highlighted fields in the form.', true);
+          }
+          return;
+        }
+
+        const payload = {
+          role: roleInput.value,
+          fullName: fullname,
+          email: email,
+          phone: phone,
+          password: password,
+          ...(isArtist && {
+            category: category,
+            district: district,
+            specialization: specialization,
+            aadhaarNumber: aadhaarRaw,
+            isAadhaarVerified: true,
+            aadhaarTxnId: currentAadhaarTxnId
+          })
+        };
+
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Creating Account...';
+
+        try {
+          if (API_CONFIG.USE_MOCK_API) {
+            console.log('📦 Registration payload:', payload);
+            await new Promise(r => setTimeout(r, 1000));
+
+            const userData = {
+              id: 'user_' + Date.now(),
+              email: email,
+              fullName: fullname,
+              phone: phone,
+              role: roleInput.value,
+              district: district || '',
+              specialization: specialization || '',
+              category: category || 'Performing Artist',
+              isAadhaarVerified: isAadhaarVerified
+            };
+            localStorage.setItem('currentUser', JSON.stringify(userData));
+
+            // ---- If artist, create an event entry ----
+            if (isArtist) {
+              const eventCategory = mapProfessionToEventCategory(category);
+              const isBiddingEligible = ['Performing Artist', 'Both', 'Elephant Owner'].includes(category);
+              // Set default emoji based on category
+              let emoji = '🎭';
+              if (category === 'Elephant Owner') emoji = '🐘';
+              else if (category === 'Performing Artist') emoji = '🥁';
+              else if (category === 'Equipment Owner') emoji = '🔧';
+              else if (category === 'Both') emoji = '🎭';
+
+              const newEvent = {
+                id: 'evt_' + Date.now(),
+                email: email,
+                artistName: fullname,
+                category: eventCategory,
+                title: specialization || fullname + "'s Performance",
+                description: specialization + ' – based in ' + district + '. Available for bookings.',
+                price: 50000,
+                imageEmoji: emoji,
+                rating: 0,
+                reviews: 0,
+                isBidding: false,
+                currentBid: null,
+                bidsPlaced: null,
+                targetBid: null,
+                timeLeft: null,
+                teamSize: 'Custom',
+                styles: specialization || 'Traditional',
+                equipment: 'Varies',
+                travelRadius: district || 'Kerala',
+                bio: 'Artist profile created via registration. Edit this in the dashboard.',
+                location: district || 'Kerala',
+                availability: 'Available for bookings',
+                professionCategory: category
+              };
+              addEventToStore(newEvent);
+            }
+
+          } else {
+            const res = await fetch(API_CONFIG.ENDPOINTS.REGISTER, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || 'Registration failed.');
+            if (data.token) localStorage.setItem('authToken', data.token);
+            if (data.user) localStorage.setItem('currentUser', JSON.stringify(data.user));
+            if (isArtist && data.event) {
+              addEventToStore(data.event);
+            }
+          }
+
+          showToast('Account created successfully! Redirecting...');
+
+          setTimeout(() => {
+            if (isArtist) {
+              window.location.href = 'ulsav userpage.html#view-profile';
+            } else {
+              window.location.href = 'booking&bid.html';
+            }
+          }, 1200);
+
+        } catch (err) {
+          showToast(err.message, true);
+          submitBtn.disabled = false;
+          submitBtn.innerText = 'Create Account';
+        }
+      });
+
+    })();
+  </script>
+
+</body>
+</html>

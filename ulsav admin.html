@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal — Utsavam Events</title>
+  <link rel="stylesheet" href="ulsav managment.css">
+  <style>
+    /* Glassmorphism overrides / additions */
+    .dash-shell {
+      backdrop-filter: blur(14px);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .dash-side {
+      background: rgba(30, 20, 10, 0.55);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-right: 1px solid rgba(212, 175, 92, 0.2);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+    }
+
+    .dash-main {
+      background: rgba(201, 199, 195, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .dash-top {
+      background: rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      border-radius: 0 0 20px 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(212, 175, 92, 0.3);
+      border-radius: 16px;
+      /* Allow dropdown to overflow */
+      overflow: visible;
+    }
+
+    .modal {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 20px;
+      border: 1px solid rgba(212, 175, 92, 0.4);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+
+    .back-home-link {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--maroon, #4A1420);
+      font-weight: 600;
+      font-size: 14px;
+      padding: 10px 20px;
+      border-radius: 30px;
+      background: rgba(255,255,255,0.4);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(212, 175, 92, 0.5);
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .back-home-link:hover {
+      background: rgba(212, 175, 92, 0.3);
+      color: var(--maroon-deep, #2E0C14);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+      transform: translateY(-2px);
+    }
+
+    .dash-top {
+      display: flex;
+      align-items: center;
+      padding: 20px 28px;
+      gap: 20px;
+    }
+
+    .dash-top > div:first-child {
+      flex-shrink: 0;
+    }
+
+    .dash-top h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    .dash-top .sub {
+      margin: 4px 0 0;
+      font-size: 14px;
+      color: var(--ink-soft, #4A3A32);
+    }
+
+    /* Smooth view switching */
+    .dash-body {
+      position: relative;
+    }
+    .dash-view {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(12px);
+      transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                  transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                  visibility 0.4s;
+      pointer-events: none;
+    }
+    .dash-view.active {
+      position: relative;
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    /* Custom dropdown styles with smooth animation */
+    .custom-select {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+      user-select: none;
+      /* Allow overflow */
+      z-index: 10;
+    }
+    .custom-select.open {
+      z-index: 9999; /* ensure on top */
+    }
+    .custom-select-trigger {
+      width: 100%;
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(166, 124, 46, 0.3);
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      color: var(--ink, #1C1410);
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .custom-select-trigger:hover {
+      border-color: rgba(212, 175, 92, 0.6);
+      background: rgba(255,255,255,0.85);
+    }
+    .custom-select-trigger .arrow {
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid var(--ink-soft, #4A3A32);
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+      margin-left: 8px;
+    }
+    .custom-select.open .arrow {
+      transform: rotate(180deg);
+    }
+    .custom-select-options {
+      position: absolute;
+      top: calc(100% + 5px);
+      left: 0;
+      right: 0;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(212, 175, 92, 0.4);
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+      opacity: 0;
+      transform: translateY(-8px);
+      z-index: 10000; /* very high */
+      min-width: 180px;
+    }
+    .custom-select.open .custom-select-options {
+      max-height: 250px;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .custom-select-option {
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+      font-size: 13.5px;
+      color: var(--ink, #1C1410);
+      white-space: nowrap;
+    }
+    .custom-select-option:hover {
+      background: rgba(212, 175, 92, 0.2);
+      color: var(--maroon-deep, #2E0C14);
+    }
+    .custom-select-option.selected {
+      background: rgba(212, 175, 92, 0.15);
+      font-weight: 500;
+      color: var(--maroon-deep, #2E0C14);
+    }
+    /* Hide native select but keep functionality */
+    select.custom-select-native {
+      display: none;
+    }
+
+    /* Ensure table cells don't clip dropdown */
+    table, td, tr, th {
+      overflow: visible;
+    }
+    .row-actions {
+      overflow: visible;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dash-shell">
+    <aside class="dash-side" id="dashSide">
+      <a href="Ulsav.html" class="brand">
+        <span>Ulsav</span>
+      </a>
+      <div class="role-badge admin">Master Admin</div>
+
+      <a href="#" class="dash-nav-link active" onclick="switchView('master-bookings', this)">
+        <span>All Bookings</span>
+      </a>
+      <a href="#" class="dash-nav-link" onclick="switchView('artists-manage', this)">
+        <span>Artists Roster</span>
+      </a>
+      <a href="#" class="dash-nav-link" onclick="switchView('reports', this)">
+        <span>Platform Stats</span>
+      </a>
+
+    </aside>
+
+    <main class="dash-main">
+      <header class="dash-top">
+        <div>
+          <h1>Admin Control Panel</h1>
+          <p class="sub">Overview and management of all event bookings and registered artists.</p>
+        </div>
+        <a href="Ulsav.html" class="back-home-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Back to Home
+        </a>
+      </header>
+
+      <div class="dash-body">
+        
+        <section id="view-master-bookings" class="dash-view active">
+          <div class="stat-row">
+            <div class="kpi">
+              <span class="num">12</span>
+              <span class="label">Total Bookings</span>
+            </div>
+            <div class="kpi">
+              <span class="num">₹2,40,000</span>
+              <span class="label">Total Volume</span>
+            </div>
+            <div class="kpi">
+              <span class="num">8</span>
+              <span class="label">Active Artists</span>
+            </div>
+            <div class="kpi">
+              <span class="num">2</span>
+              <span class="label">Unassigned</span>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <h3>All Platform Bookings</h3>
+              <div class="panel-tools">
+                <input type="text" id="bookingSearch" placeholder="Search client or artist..." onkeyup="filterBookings()">
+                <select id="statusFilter" onchange="filterBookings()" class="custom-select-native">
+                  <option value="all">All Statuses</option>
+                  <option value="confirmed">Confirmed</option>
+                  <option value="pending">Pending</option>
+                  <option value="unassigned">Unassigned</option>
+                </select>
+              </div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Client</th>
+                  <th>Assigned Artist</th>
+                  <th>Event Date</th>
+                  <th>Fee</th>
+                  <th>Status</th>
+                  <th>Admin Action</th>
+                </tr>
+              </thead>
+              <tbody id="masterTableBody">
+                <tr data-status="confirmed">
+                  <td>#UB-101</td>
+                  <td>Rahul Nair</td>
+                  <td>Thiruvambady Melam Group</td>
+                  <td>Oct 24, 2026</td>
+                  <td>₹15,000</td>
+                  <td><span class="badge confirmed">Confirmed</span></td>
+                  <td>
+                    <div class="row-actions">
+                      <select class="mini-select custom-select-native" onchange="updateBookingStatus(this)">
+                        <option value="confirmed" selected>Confirmed</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                      </select>
+                      <button class="icon-btn" title="View details" onclick="openDetailsModal('#UB-101', 'Rahul Nair', 'Thiruvambady Melam Group', 'Oct 24, 2026', '₹15,000', 'Confirmed')">👁️</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr data-status="unassigned">
+                  <td>#UB-102</td>
+                  <td>Kavya Suresh</td>
+                  <td><em>Unassigned</em></td>
+                  <td>Nov 05, 2026</td>
+                  <td>₹25,000</td>
+                  <td><span class="badge unassigned">Unassigned</span></td>
+                  <td>
+                    <div class="row-actions">
+                      <select class="mini-select custom-select-native" onchange="assignArtist(this)">
+                        <option value="" disabled selected>Assign Artist...</option>
+                        <option value="Thiruvambady Melam">Thiruvambady Melam</option>
+                        <option value="Kala Kathakali Troupe">Kala Kathakali Troupe</option>
+                      </select>
+                      <button class="icon-btn" title="View details" onclick="openDetailsModal('#UB-102', 'Kavya Suresh', 'None', 'Nov 05, 2026', '₹25,000', 'Unassigned')">👁️</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="view-artists-manage" class="dash-view">
+          <div class="panel">
+            <div class="panel-head">
+              <h3>Registered Artists Directory</h3>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Artist / Troupe Name</th>
+                  <th>Specialty</th>
+                  <th>Base Rate</th>
+                  <th>Account Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Thiruvambady Melam Group</td>
+                  <td>Chenda / Panchavadyam</td>
+                  <td>₹15,000</td>
+                  <td><span class="badge active">Active</span></td>
+                  <td>
+                    <button class="btn btn-outline-maroon btn-sm" onclick="showToast('Artist profile opened')">Edit Profile</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Kala Kathakali Troupe</td>
+                  <td>Kathakali Dance</td>
+                  <td>₹30,000</td>
+                  <td><span class="badge active">Active</span></td>
+                  <td>
+                    <button class="btn btn-outline-maroon btn-sm" onclick="showToast('Artist profile opened')">Edit Profile</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="view-reports" class="dash-view">
+          <div class="panel">
+            <div class="panel-head">
+              <h3>System Overview</h3>
+            </div>
+            <div style="padding: 24px;">
+              <p style="color: var(--ink-soft);">Platform metric reports, analytics, and booking exports will appear here.</p>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="detailModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="modalTitle">Booking Details</h3>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <dl>
+        <div><dt>Booking Ref:</dt><dd id="mRef">-</dd></div>
+        <div><dt>Client Name:</dt><dd id="mClient">-</dd></div>
+        <div><dt>Artist Name:</dt><dd id="mArtist">-</dd></div>
+        <div><dt>Event Date:</dt><dd id="mDate">-</dd></div>
+        <div><dt>Amount:</dt><dd id="mAmt">-</dd></div>
+        <div><dt>Status:</dt><dd id="mStatus">-</dd></div>
+      </dl>
+      <button class="btn btn-primary btn-block" onclick="closeModal()">Close Inspector</button>
+    </div>
+  </div>
+
+  <div class="toast-stack" id="toastStack"></div>
+
+  <script>
+    // Custom Select Initialization
+    function initCustomSelects() {
+      document.querySelectorAll('select.custom-select-native').forEach(select => {
+        if (select.parentNode.querySelector('.custom-select')) return;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'custom-select';
+        
+        const trigger = document.createElement('div');
+        trigger.className = 'custom-select-trigger';
+        trigger.tabIndex = 0;
+        
+        const selectedOption = select.options[select.selectedIndex] || select.options[0];
+        const triggerText = document.createElement('span');
+        triggerText.className = 'selected-text';
+        triggerText.textContent = selectedOption ? selectedOption.textContent : 'Select...';
+        
+        const arrow = document.createElement('span');
+        arrow.className = 'arrow';
+        
+        trigger.appendChild(triggerText);
+        trigger.appendChild(arrow);
+        
+        const optionsContainer = document.createElement('div');
+        optionsContainer.className = 'custom-select-options';
+        
+        Array.from(select.options).forEach(option => {
+          const optDiv = document.createElement('div');
+          optDiv.className = 'custom-select-option';
+          optDiv.textContent = option.textContent;
+          optDiv.dataset.value = option.value;
+          
+          if (option.selected) {
+            optDiv.classList.add('selected');
+          }
+          
+          optDiv.addEventListener('click', () => {
+            select.value = option.value;
+            const event = new Event('change', { bubbles: true });
+            select.dispatchEvent(event);
+            
+            triggerText.textContent = option.textContent;
+            optionsContainer.querySelectorAll('.custom-select-option').forEach(opt => opt.classList.remove('selected'));
+            optDiv.classList.add('selected');
+            wrapper.classList.remove('open');
+          });
+          
+          optionsContainer.appendChild(optDiv);
+        });
+        
+        wrapper.appendChild(trigger);
+        wrapper.appendChild(optionsContainer);
+        
+        select.parentNode.insertBefore(wrapper, select.nextSibling);
+        select.style.display = 'none';
+        
+        trigger.addEventListener('click', (e) => {
+          e.stopPropagation();
+          document.querySelectorAll('.custom-select.open').forEach(d => {
+            if (d !== wrapper) d.classList.remove('open');
+          });
+          wrapper.classList.toggle('open');
+        });
+        
+        document.addEventListener('click', (e) => {
+          if (!wrapper.contains(e.target)) {
+            wrapper.classList.remove('open');
+          }
+        });
+      });
+    }
+
+    function switchView(viewName, element) {
+      document.querySelectorAll('.dash-view').forEach(view => view.classList.remove('active'));
+      document.querySelectorAll('.dash-nav-link').forEach(link => link.classList.remove('active'));
+      
+      document.getElementById(`view-${viewName}`).classList.add('active');
+      if (element) element.classList.add('active');
+    }
+
+    function showToast(message, isError = false) {
+      const stack = document.getElementById('toastStack');
+      const toast = document.createElement('div');
+      toast.className = `toast ${isError ? 'error' : ''}`;
+      toast.innerText = message;
+      stack.appendChild(toast);
+
+      setTimeout(() => toast.classList.add('show'), 100);
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400);
+      }, 3000);
+    }
+
+    function filterBookings() {
+      const query = document.getElementById('bookingSearch').value.toLowerCase();
+      const status = document.getElementById('statusFilter').value;
+      const rows = document.querySelectorAll('#masterTableBody tr');
+
+      rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        const rowStatus = row.getAttribute('data-status');
+        const matchesQuery = text.includes(query);
+        const matchesStatus = status === 'all' || rowStatus === status;
+
+        row.style.display = matchesQuery && matchesStatus ? '' : 'none';
+      });
+    }
+
+    function updateBookingStatus(selectElement) {
+      const val = selectElement.value;
+      showToast(`Booking status updated to: ${val}`);
+    }
+
+    function assignArtist(selectElement) {
+      const artist = selectElement.value;
+      if (artist) {
+        showToast(`Assigned event to: ${artist}`);
+      }
+    }
+
+    function openDetailsModal(ref, client, artist, date, amt, status) {
+      document.getElementById('mRef').innerText = ref;
+      document.getElementById('mClient').innerText = client;
+      document.getElementById('mArtist').innerText = artist;
+      document.getElementById('mDate').innerText = date;
+      document.getElementById('mAmt').innerText = amt;
+      document.getElementById('mStatus').innerText = status;
+      document.getElementById('detailModal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('detailModal').classList.remove('open');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initCustomSelects();
+      
+      const hash = window.location.hash.replace('#', '');
+      if (hash) {
+        const targetLink = document.querySelector(`.dash-nav-link[onclick*="'${hash}'"]`);
+        switchView(hash, targetLink);
+      }
+    });
+  </script>
+</body>
+</html>

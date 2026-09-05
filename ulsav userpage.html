@@ -1,0 +1,740 @@
+<!-- ============================================================
+     ULSAV USERPAGE.HTML  –  Artist Dashboard (Event Editor)
+     Added bidding toggle for eligible collaborators
+     ============================================================ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artist Dashboard — Utsavam Events</title>
+  <link rel="stylesheet" href="ulsav managment.css">
+  <style>
+    .dash-shell {
+      backdrop-filter: blur(14px);
+      background: rgba(255,255,255,0.08);
+    }
+    .dash-side {
+      background: rgba(30,20,10,0.55);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-right: 1px solid rgba(212,175,92,0.2);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+    }
+    .dash-main {
+      background: rgba(201,199,195,0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .dash-top {
+      background: rgba(255,255,255,0.4);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      border-radius: 0 0 20px 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+    .panel {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(212,175,92,0.3);
+      border-radius: 16px;
+    }
+    .back-home-link {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--maroon, #4A1420);
+      font-weight: 600;
+      font-size: 14px;
+      padding: 10px 20px;
+      border-radius: 30px;
+      background: rgba(255,255,255,0.4);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(212,175,92,0.5);
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+    .back-home-link:hover {
+      background: rgba(212,175,92,0.3);
+      color: var(--maroon-deep, #2E0C14);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+      transform: translateY(-2px);
+    }
+    .dash-top {
+      display: flex;
+      align-items: center;
+      padding: 20px 28px;
+      gap: 20px;
+    }
+    .dash-top > div:first-child { flex-shrink: 0; }
+    .dash-body { position: relative; }
+    .dash-view {
+      position: absolute;
+      top: 0; left: 0; width: 100%;
+      opacity: 0; visibility: hidden;
+      transform: translateY(12px);
+      transition: opacity 0.4s cubic-bezier(0.25,0.46,0.45,0.94),
+                  transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94),
+                  visibility 0.4s;
+      pointer-events: none;
+    }
+    .dash-view.active {
+      position: relative;
+      opacity: 1; visibility: visible;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    select, input, textarea {
+      transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    }
+    select:hover, input:hover, textarea:hover {
+      border-color: rgba(212,175,92,0.6);
+    }
+    select:focus, input:focus, textarea:focus {
+      border-color: var(--gold-light, #D4AF5C);
+      box-shadow: 0 0 0 3px rgba(212,175,92,0.2);
+      outline: none;
+      background-color: rgba(255,255,255,0.9);
+    }
+    .btn, .icon-btn, .mini-select {
+      transition: all 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .btn:hover, .icon-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(206,11,11,0.15);
+    }
+    .btn:active, .icon-btn:active { transform: translateY(0); }
+    .dash-nav-link {
+      transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+    }
+    .dash-nav-link:hover {
+      transform: translateX(4px);
+    }
+    .dash-nav-link.active {
+      background: rgba(241,170,16,0.829);
+      color: #4A1420;
+    }
+    .custom-select {
+      position: relative;
+      width: 100%;
+      user-select: none;
+    }
+    .custom-select-trigger {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(166,124,46,0.3);
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      color: var(--ink, #1C1410);
+      transition: all 0.3s ease;
+    }
+    .custom-select-trigger:hover {
+      border-color: rgba(212,175,92,0.6);
+      background: rgba(255,255,255,0.85);
+    }
+    .custom-select-trigger:focus {
+      outline: none;
+      border-color: var(--gold-light, #D4AF5C);
+      box-shadow: 0 0 0 3px rgba(212,175,92,0.2);
+    }
+    .custom-select-trigger .arrow {
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid var(--ink-soft, #4A3A32);
+      transition: transform 0.3s ease;
+    }
+    .custom-select.open .arrow { transform: rotate(180deg); }
+    .custom-select-options {
+      position: absolute;
+      top: calc(100% + 5px);
+      left: 0; right: 0;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(212,175,92,0.4);
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+      opacity: 0;
+      transform: translateY(-8px);
+      z-index: 10;
+    }
+    .custom-select.open .custom-select-options {
+      max-height: 200px;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .custom-select-option {
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+      font-size: 14px;
+      color: var(--ink, #1C1410);
+    }
+    .custom-select-option:hover {
+      background: rgba(212,175,92,0.2);
+      color: var(--maroon-deep, #2E0C14);
+    }
+    .custom-select-option.selected {
+      background: rgba(212,175,92,0.15);
+      font-weight: 500;
+      color: var(--maroon-deep, #2E0C14);
+    }
+    .custom-select-input { display: none; }
+
+    /* Toggle switch for bidding */
+    .toggle-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 8px 0;
+    }
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 52px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #6b6561;
+      transition: 0.3s;
+      border-radius: 28px;
+    }
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      height: 20px;
+      width: 20px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+    .toggle-switch input:checked + .toggle-slider {
+      background-color: #e05a2b;
+    }
+    .toggle-switch input:checked + .toggle-slider::before {
+      transform: translateX(24px);
+    }
+    .toggle-label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--ink, #1C1410);
+    }
+    .toggle-hint {
+      font-size: 0.75rem;
+      color: #6b6561;
+      margin-left: auto;
+    }
+    .bidding-info-box {
+      margin-top: 8px;
+      padding: 10px 14px;
+      background: rgba(224, 90, 43, 0.08);
+      border: 1px solid rgba(224, 90, 43, 0.2);
+      border-radius: 8px;
+      font-size: 0.8rem;
+      color: var(--ink, #1C1410);
+      display: none;
+    }
+    .bidding-info-box.visible {
+      display: block;
+    }
+    .bidding-info-box .highlight {
+      color: #e05a2b;
+      font-weight: 600;
+    }
+
+    .toast-stack {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 360px;
+    }
+    .toast {
+      background: rgba(30,20,10,0.92);
+      backdrop-filter: blur(10px);
+      color: var(--ivory, #F3E9D8);
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      transform: translateX(120%);
+      transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .toast.show { transform: translateX(0); }
+    .toast.error { border-color: #c0392b; }
+    .field-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .field-row .field {
+      flex: 1;
+      min-width: 180px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="dash-shell">
+  <aside class="dash-side" id="dashSide">
+    <a href="Ulsav.html" class="brand"><span>Ulsav</span></a>
+    <div class="role-badge">Artist Portal</div>
+    <a href="#view-bookings" class="dash-nav-link"><span>My Bookings</span></a>
+    <a href="#view-pricing" class="dash-nav-link"><span>Rates & Services</span></a>
+    <a href="#view-profile" class="dash-nav-link"><span>Profile Info</span></a>
+  </aside>
+
+  <main class="dash-main">
+    <header class="dash-top">
+      <div>
+        <h1>Welcome, <span id="artistNameDisplay">Artist</span></h1>
+        <p class="sub">Manage your performance schedule and program fees.</p>
+      </div>
+      <a href="booking&bid.html" class="back-home-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        View My Listing
+      </a>
+    </header>
+
+    <div class="dash-body">
+      
+      <!-- Bookings View -->
+      <section id="view-bookings" class="dash-view active">
+        <div class="stat-row">
+          <div class="kpi">
+            <span class="num" id="artistTotalBookings">0</span>
+            <span class="label">Total Programs</span>
+          </div>
+          <div class="kpi">
+            <span class="num">₹0</span>
+            <span class="label">Total Earnings</span>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Incoming Event Requests</h3></div>
+          <table>
+            <thead><tr><th>Client Name</th><th>Event Type</th><th>Date & Time</th><th>Offered Pay</th><th>Status</th></tr></thead>
+            <tbody id="artistBookingTable">
+              <tr><td colspan="5" style="text-align:center;color:#6b6561;">No bookings yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Pricing View -->
+      <section id="view-pricing" class="dash-view">
+        <div class="panel">
+          <div class="panel-head"><h3>Program Rates & Pricing</h3></div>
+          <form class="profile-form" id="pricingForm">
+            <div class="field">
+              <label for="baseRate">Base Program Fee (per 2 hours)</label>
+              <input type="number" id="baseRate" required>
+            </div>
+            <div class="field">
+              <label for="extraHourRate">Overtime Fee (per extra hour)</label>
+              <input type="number" id="extraHourRate" required>
+            </div>
+            <div class="field full">
+              <label>Travel & Logistics Preference</label>
+              <div class="custom-select" id="travelFeeCustom" data-name="travelFee">
+                <div class="custom-select-trigger" tabindex="0" onclick="toggleCustomSelect(this)">
+                  <span class="selected-text">Client arranges/pays transport separately</span>
+                  <span class="arrow"></span>
+                </div>
+                <div class="custom-select-options">
+                  <div class="custom-select-option" data-value="included" onclick="selectCustomOption(this)">Included in Base Fee</div>
+                  <div class="custom-select-option selected" data-value="additional" onclick="selectCustomOption(this)">Client arranges/pays transport separately</div>
+                </div>
+                <input type="hidden" class="custom-select-input" name="travelFee" value="additional">
+              </div>
+            </div>
+            <div class="field full">
+              <button type="submit" class="btn btn-primary">Save Rates</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- Profile View – includes bidding toggle -->
+      <section id="view-profile" class="dash-view">
+        <div class="panel">
+          <div class="panel-head"><h3>Edit Your Event Listing</h3></div>
+          <form class="profile-form" id="profileForm">
+            <div class="field">
+              <label for="eventTitle">Event Title</label>
+              <input type="text" id="eventTitle" required>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="eventCategory">Category</label>
+                <select id="eventCategory">
+                  <option value="pooram">Grand Pooram</option>
+                  <option value="melam">Chenda Melam</option>
+                  <option value="fireworks">Fireworks</option>
+                  <option value="kudamattam">Kudamattam</option>
+                  <option value="wedding">Wedding</option>
+                  <option value="corporate">Corporate</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="eventPrice">Base Price (₹)</label>
+                <input type="number" id="eventPrice" required>
+              </div>
+            </div>
+            <div class="field">
+              <label for="eventDescription">Short Description</label>
+              <input type="text" id="eventDescription" placeholder="Brief description of your offering">
+            </div>
+            <div class="field full">
+              <label for="eventBio">Full Bio / Details</label>
+              <textarea id="eventBio" rows="4"></textarea>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="eventLocation">Location (District)</label>
+                <input type="text" id="eventLocation" placeholder="e.g. Thrissur">
+              </div>
+              <div class="field">
+                <label for="eventAvailability">Availability</label>
+                <input type="text" id="eventAvailability" placeholder="e.g. Available for bookings">
+              </div>
+            </div>
+
+            <!-- ===== BIDDING TOGGLE (visible only for eligible categories) ===== -->
+            <div id="biddingToggleWrapper" style="display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(166,124,46,0.2);">
+              <div class="field full">
+                <div class="toggle-wrapper">
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="enableBidding">
+                    <span class="toggle-slider"></span>
+                  </label>
+                  <span class="toggle-label">Enable Bidding</span>
+                  <span class="toggle-hint">Allow users to bid on your service</span>
+                </div>
+                <div id="biddingInfoBox" class="bidding-info-box">
+                  When enabled, your listing will appear in the <span class="highlight">Live Bidding</span> section on the marketplace.
+                  Users can place bids, and the highest bidder wins.
+                </div>
+              </div>
+            </div>
+
+            <div class="field full" style="margin-top: 16px;">
+              <button type="submit" class="btn btn-primary">Update Listing</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div class="toast-stack" id="toastStack"></div>
+
+<script>
+  (function() {
+    // ---- Helpers ----
+    const STORAGE_KEY = 'pooramEvents';
+
+    function loadEvents() {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) return JSON.parse(stored);
+      } catch (_) {}
+      return [];
+    }
+
+    function saveEvents(events) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
+    }
+
+    function getCurrentUser() {
+      try {
+        const user = localStorage.getItem('currentUser');
+        if (user) return JSON.parse(user);
+      } catch (_) {}
+      return null;
+    }
+
+    function getUserEvent() {
+      const user = getCurrentUser();
+      if (!user) return null;
+      const events = loadEvents();
+      return events.find(e => e.email === user.email) || null;
+    }
+
+    function updateEvent(updatedEvent) {
+      const events = loadEvents();
+      const index = events.findIndex(e => e.id === updatedEvent.id);
+      if (index !== -1) {
+        events[index] = updatedEvent;
+      } else {
+        events.push(updatedEvent);
+      }
+      saveEvents(events);
+    }
+
+    // ---- Session Check ----
+    const user = getCurrentUser();
+    if (!user) {
+      window.location.href = 'register.html';
+      return;
+    }
+
+    // ---- Determine if user is eligible for bidding ----
+    const ELIGIBLE_CATEGORIES = ['Performing Artist', 'Both', 'Elephant Owner'];
+    const isEligibleForBidding = ELIGIBLE_CATEGORIES.includes(user.category || '');
+
+    // ---- Populate form with event data ----
+    function populateForm() {
+      document.getElementById('artistNameDisplay').textContent = user.fullName || 'Artist';
+
+      let evt = getUserEvent();
+      if (!evt) {
+        evt = {
+          id: 'evt_' + Date.now(),
+          email: user.email,
+          artistName: user.fullName || 'Artist',
+          category: 'melam',
+          title: user.fullName + "'s Performance",
+          description: 'Edit this description in your dashboard.',
+          price: 50000,
+          imageEmoji: '🎭',
+          rating: 0,
+          reviews: 0,
+          isBidding: false,
+          currentBid: null,
+          bidsPlaced: null,
+          targetBid: null,
+          timeLeft: null,
+          teamSize: 'Custom',
+          styles: '',
+          equipment: '',
+          travelRadius: '',
+          bio: 'Edit this bio in your dashboard.',
+          location: 'Kerala',
+          availability: 'Available for bookings',
+          professionCategory: user.category || 'Performing Artist'
+        };
+        updateEvent(evt);
+      }
+
+      // Populate form fields
+      document.getElementById('eventTitle').value = evt.title || '';
+      document.getElementById('eventCategory').value = evt.category || 'melam';
+      document.getElementById('eventPrice').value = evt.price || 0;
+      document.getElementById('eventDescription').value = evt.description || '';
+      document.getElementById('eventBio').value = evt.bio || '';
+      document.getElementById('eventLocation').value = evt.location || '';
+      document.getElementById('eventAvailability').value = evt.availability || '';
+
+      // Populate pricing fields
+      document.getElementById('baseRate').value = evt.baseRate || evt.price || 0;
+      document.getElementById('extraHourRate').value = evt.extraHourRate || 0;
+
+      // Travel preference
+      const travelPref = evt.travelFee || 'additional';
+      const travelSelect = document.getElementById('travelFeeCustom');
+      const options = travelSelect.querySelectorAll('.custom-select-option');
+      options.forEach(opt => {
+        opt.classList.toggle('selected', opt.getAttribute('data-value') === travelPref);
+        if (opt.classList.contains('selected')) {
+          travelSelect.querySelector('.selected-text').textContent = opt.textContent;
+          travelSelect.querySelector('.custom-select-input').value = travelPref;
+        }
+      });
+
+      // ---- Bidding toggle ----
+      const toggleWrapper = document.getElementById('biddingToggleWrapper');
+      if (isEligibleForBidding) {
+        toggleWrapper.style.display = 'block';
+        const checkbox = document.getElementById('enableBidding');
+        checkbox.checked = evt.isBidding || false;
+        // Show/hide info box
+        const infoBox = document.getElementById('biddingInfoBox');
+        if (checkbox.checked) {
+          infoBox.classList.add('visible');
+        } else {
+          infoBox.classList.remove('visible');
+        }
+        // Toggle info box on change
+        checkbox.addEventListener('change', function() {
+          if (this.checked) {
+            infoBox.classList.add('visible');
+          } else {
+            infoBox.classList.remove('visible');
+          }
+        });
+      } else {
+        toggleWrapper.style.display = 'none';
+      }
+    }
+
+    // ---- Save form (Profile Info) ----
+    document.getElementById('profileForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      let evt = getUserEvent();
+      if (!evt) {
+        showToast('Error: No event found. Please try again.', true);
+        return;
+      }
+
+      // Update fields from form
+      evt.title = document.getElementById('eventTitle').value.trim() || evt.title;
+      evt.category = document.getElementById('eventCategory').value;
+      evt.price = parseInt(document.getElementById('eventPrice').value) || 0;
+      evt.description = document.getElementById('eventDescription').value.trim();
+      evt.bio = document.getElementById('eventBio').value.trim();
+      evt.location = document.getElementById('eventLocation').value.trim();
+      evt.availability = document.getElementById('eventAvailability').value.trim();
+
+      // Save rates
+      evt.baseRate = parseInt(document.getElementById('baseRate').value) || evt.price;
+      evt.extraHourRate = parseInt(document.getElementById('extraHourRate').value) || 0;
+      const travelPref = document.getElementById('travelFeeCustom').querySelector('.custom-select-input').value;
+      evt.travelFee = travelPref;
+
+      // ---- Save bidding toggle (only if eligible) ----
+      if (isEligibleForBidding) {
+        const checkbox = document.getElementById('enableBidding');
+        evt.isBidding = checkbox.checked;
+        // Set default bid values if bidding is enabled and not set
+        if (evt.isBidding) {
+          if (evt.currentBid === null || evt.currentBid === undefined) {
+            evt.currentBid = Math.round(evt.price * 0.8);
+          }
+          if (evt.targetBid === null || evt.targetBid === undefined) {
+            evt.targetBid = Math.round(evt.price * 1.2);
+          }
+          if (evt.bidsPlaced === null || evt.bidsPlaced === undefined) {
+            evt.bidsPlaced = 0;
+          }
+          if (!evt.timeLeft) {
+            evt.timeLeft = '7d';
+          }
+        } else {
+          evt.currentBid = null;
+          evt.bidsPlaced = null;
+          evt.targetBid = null;
+          evt.timeLeft = null;
+        }
+      }
+
+      // Update the event
+      updateEvent(evt);
+      showToast('Event listing updated successfully!');
+    });
+
+    // ---- Save form (Rates & Services) ----
+    document.getElementById('pricingForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      let evt = getUserEvent();
+      if (!evt) {
+        showToast('Please create your event listing first in the Profile Info tab.', true);
+        return;
+      }
+      
+      evt.baseRate = parseInt(document.getElementById('baseRate').value) || evt.price;
+      evt.extraHourRate = parseInt(document.getElementById('extraHourRate').value) || 0;
+      const travelPref = document.getElementById('travelFeeCustom').querySelector('.custom-select-input').value;
+      evt.travelFee = travelPref;
+      
+      updateEvent(evt);
+      showToast('Rates saved successfully!');
+    });
+
+    // ---- Toast ----
+    function showToast(message, isError = false) {
+      const stack = document.getElementById('toastStack');
+      if (!stack) return;
+      const toast = document.createElement('div');
+      toast.className = 'toast' + (isError ? ' error' : '');
+      toast.innerText = message;
+      stack.appendChild(toast);
+      setTimeout(() => toast.classList.add('show'), 100);
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400);
+      }, 3000);
+    }
+
+    // ---- Custom dropdown ----
+    window.toggleCustomSelect = function(trigger) {
+      const parent = trigger.closest('.custom-select');
+      if (parent.classList.contains('open')) {
+        parent.classList.remove('open');
+      } else {
+        document.querySelectorAll('.custom-select.open').forEach(d => d.classList.remove('open'));
+        parent.classList.add('open');
+      }
+    };
+    window.selectCustomOption = function(option) {
+      const parent = option.closest('.custom-select');
+      const value = option.getAttribute('data-value');
+      const text = option.innerText;
+      const hiddenInput = parent.querySelector('.custom-select-input');
+      if (hiddenInput) hiddenInput.value = value;
+      const selectedText = parent.querySelector('.selected-text');
+      if (selectedText) selectedText.innerText = text;
+      parent.querySelectorAll('.custom-select-option').forEach(opt => opt.classList.remove('selected'));
+      option.classList.add('selected');
+      parent.classList.remove('open');
+    };
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.custom-select')) {
+        document.querySelectorAll('.custom-select.open').forEach(d => d.classList.remove('open'));
+      }
+    });
+
+    // ---- Hash routing ----
+    function renderCorrectView() {
+      let hash = window.location.hash || '#view-bookings';
+      document.querySelectorAll('.dash-view').forEach(v => v.classList.remove('active'));
+      const target = document.querySelector(hash);
+      if (target) target.classList.add('active');
+      document.querySelectorAll('.dash-nav-link').forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === hash);
+      });
+    }
+    window.addEventListener('DOMContentLoaded', function() {
+      renderCorrectView();
+      populateForm();
+    });
+    window.addEventListener('hashchange', renderCorrectView);
+
+    window.__artist = { loadEvents, saveEvents, getUserEvent, updateEvent };
+  })();
+</script>
+
+</body>
+</html>

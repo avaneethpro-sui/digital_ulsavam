@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register — Pooram Events</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ivory:#F3E9D8;
+    --ivory-dim:#E8DBC3;
+    --maroon:#5C1A21;
+    --maroon-deep:#43121A;
+    --vermillion:#D8531F;
+    --gold:#B8862F;
+    --gold-light:#E3C173;
+    --bark:#1B0F0D;
+    --bark-soft:#241511;
+    --ink:#221410;
+    --line: rgba(184,134,47,0.35);
+    --glass-bg: rgba(255, 255, 255, 0.25);
+    --glass-border: rgba(255, 255, 255, 0.4);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    --transition-smooth: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:'Work Sans', sans-serif; color:var(--ink);
+    background: linear-gradient(135deg, #f7f2ea, #e8ddcc);
+    min-height:100vh;
+    overflow-x:hidden;
+    position:relative;
+  }
+  h1,h2,.display,.brand{font-family:'Marcellus', serif; font-weight:400;}
+  a{color:inherit; text-decoration:none;}
+  img,svg{display:block;max-width:100%;}
+
+  /* ---------- GLASSMORPHISM OVERLAY ---------- */
+  .glass-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(2px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .split{
+    display:grid; grid-template-columns:1.1fr 1fr; min-height:100vh;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ---------- LEFT: promo panel with enhanced glass and parallax ---------- */
+  .promo{
+    position:relative; overflow:hidden;
+    background: radial-gradient(ellipse at 50% 20%, #3a1c14 0%, var(--bark) 55%, #0f0806 100%);
+    display:flex; flex-direction:column; justify-content:space-between;
+    padding:44px;
+    border-radius: 0 24px 24px 0;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    border-right: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(5px);
+    z-index: 1;
+  }
+  .promo-layers{position:absolute; inset:0;}
+  .p-layer{position:absolute; left:0; right:0; will-change:transform; transition: transform 0.2s ease-out;}
+  .p-stars{top:0; height:55%;}
+  .star{position:absolute; width:2px; height:2px; background:var(--gold-light); border-radius:50%; opacity:.5; animation: twinkle 3.5s ease-in-out infinite;}
+  @keyframes twinkle{ 0%,100%{opacity:.15;} 50%{opacity:.8;} }
+
+  .p-gopuram{bottom:0; height:60%;}
+  .p-embers{position:absolute; inset:0; pointer-events:none;}
+  .ember{position:absolute; bottom:-10px; width:4px; height:4px; border-radius:50%;
+    background: radial-gradient(circle, var(--gold-light), var(--vermillion));
+    animation: rise linear infinite; opacity:0;}
+  @keyframes rise{
+    0%{transform:translateY(0) translateX(0); opacity:0;}
+    10%{opacity:.9;}
+    100%{transform:translateY(-90vh) translateX(var(--drift,20px)); opacity:0;}
+  }
+
+  .promo-top{position:relative; z-index:2;}
+  .brand{display:flex; align-items:center; gap:10px; font-size:19px; color:var(--gold-light); transition: transform 0.3s;}
+  .brand:hover{transform: translateY(-2px);}
+  .brand svg{width:24px;height:24px;}
+
+  .promo-bottom{position:relative; z-index:2; max-width:420px;}
+  .promo-bottom .rule{width:52px; height:2px; background:var(--gold); margin-bottom:20px;}
+  .promo-bottom h1{color:var(--gold-light); font-size:clamp(28px,3.4vw,38px); line-height:1.2; margin-bottom:16px;}
+  .promo-bottom p{color:var(--ivory-dim); font-size:15px;}
+
+  /* ---------- RIGHT: form panel with glass effect ---------- */
+  .form-panel{
+    display:flex; align-items:center; justify-content:center; padding:44px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border-radius: 24px 0 0 24px;
+    border-left: 1px solid rgba(255,255,255,0.5);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    z-index: 1;
+  }
+  .form-card{
+    width:100%; max-width:400px;
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 40px 36px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    border: 1px solid rgba(255,255,255,0.8);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: cardAppear 0.7s cubic-bezier(0.22, 0.7, 0.2, 1) both;
+  }
+  @keyframes cardAppear {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .form-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+  }
+
+  .form-card .back{
+    display:inline-flex; align-items:center; gap:8px; font-size:13.5px; color:#7a5f4d;
+    margin-bottom:34px; transition:color .3s, transform .3s; font-family:'Work Sans', sans-serif;
+  }
+  .form-card .back:hover{color:var(--vermillion); transform: translateX(-4px);}
+  .form-card .back svg{width:14px;height:14px;}
+
+  .lamp{width:46px; height:46px; margin-bottom:22px; animation: lampFloat 3s ease-in-out infinite;}
+  @keyframes lampFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  .form-card h2{font-size:30px; color:var(--maroon); margin-bottom:8px;}
+  .form-card .subhead{color:#6b5548; font-size:14.5px; margin-bottom:34px;}
+
+  .field{margin-bottom:20px; animation: fadeUp 0.5s ease both;}
+  .field:nth-child(1) { animation-delay: 0.2s; }
+  .field:nth-child(2) { animation-delay: 0.3s; }
+  .field:nth-child(3) { animation-delay: 0.4s; }
+  .field label{display:block; font-size:13px; letter-spacing:.03em; color:#5a4436; margin-bottom:6px; font-weight:500;}
+  .field input{
+    width:100%; padding:12px 14px; font-family:'Work Sans',sans-serif; font-size:15px;
+    background:rgba(255,255,255,0.8); border:1px solid rgba(217,201,172,0.6); border-radius:8px; color:var(--ink);
+    transition: border-color .3s ease, box-shadow .3s ease, background .3s ease;
+  }
+  .field input:focus{
+    outline:none; border-color:var(--vermillion);
+    box-shadow: 0 0 0 3px rgba(216,83,31,0.15);
+    background: rgba(255,255,255,0.95);
+  }
+  .field-row{display:flex; justify-content:space-between; align-items:center; margin-bottom:26px; font-size:13.5px;}
+  .field-row label{display:flex; align-items:center; gap:8px; color:#5a4436; cursor:pointer;}
+  .field-row a{color:var(--vermillion);}
+  .field-row a:hover{text-decoration:underline;}
+
+  .btn-submit{
+    width:100%; padding:14px; background:var(--vermillion); color:var(--ivory);
+    border:none; border-radius:999px; font-family:'Work Sans',sans-serif; font-size:15px; font-weight:600;
+    letter-spacing:.02em; cursor:pointer; position:relative; overflow:hidden;
+    transition: background .3s ease, transform .3s ease, box-shadow .3s ease;
+    animation: fadeUp 0.5s ease 0.5s both;
+  }
+  .btn-submit:hover{
+    background:#c04616; transform:translateY(-3px);
+    box-shadow: 0 8px 20px rgba(216,83,31,0.4);
+  }
+  .btn-submit:active{transform:translateY(0);}
+
+  .divider{display:flex; align-items:center; gap:14px; margin:30px 0; color:#a4907c; font-size:12.5px; letter-spacing:.06em;}
+  .divider::before, .divider::after{content:''; flex:1; height:1px; background:var(--line);}
+
+  .signup-line{text-align:center; font-size:14.5px; color:#6b5548;}
+  .signup-line a{color:var(--vermillion); font-weight:500;}
+  .signup-line a:hover{text-decoration:underline;}
+
+  .status-msg{
+    margin-top:18px; padding:12px 14px; border-radius:8px; font-size:13.5px;
+    background:rgba(253,243,228,0.9); border:1px solid var(--gold); color:#6b4c1a;
+    display:none; backdrop-filter: blur(4px);
+  }
+  .status-msg.show{display:block;}
+
+  /* Reveal animations for form elements */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 880px){
+    .split{grid-template-columns:1fr;}
+    .promo{min-height:280px; border-radius: 0 0 24px 24px;}
+    .form-panel{ border-radius: 24px 24px 0 0; }
+    .promo-bottom{max-width:100%;}
+    .form-card{padding: 30px 24px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+    .p-layer{transform:none !important;}
+    .lamp, .form-card, .btn-submit { animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="glass-overlay"></div> <!-- subtle global glass overlay -->
+
+<div class="split">
+  <div class="promo" id="promoPanel">
+    <div class="promo-layers">
+      <div class="p-layer p-stars" id="loginStars" data-speed="0.06" data-depth="0.02"></div>
+      <svg class="p-layer p-gopuram" data-speed="0.14" data-depth="0.04" viewBox="0 0 700 420" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+        <g fill="#120907">
+          <g transform="translate(250,60)">
+            <polygon points="100,0 116,30 84,30"/>
+            <polygon points="64,30 136,30 152,68 48,68"/>
+            <polygon points="40,68 160,68 178,112 22,112"/>
+            <rect x="10" y="112" width="180" height="260"/>
+          </g>
+        </g>
+      </svg>
+      <div class="p-layer p-embers" id="loginEmbers" data-speed="0.32" data-depth="0.06"></div>
+    </div>
+
+    <div class="promo-top">
+      <a class="brand" href="Ulsav.html">
+        <svg viewBox="0 0 40 40" fill="none"><path d="M20 6C20 6 13 13 13 21C13 26 16 29 20 29C24 29 27 26 27 21C27 13 20 6 20 6Z" fill="var(--vermillion)"/><path d="M9 30C9 30 14 26 20 26C26 26 31 30 31 30V33C31 33 26 30 20 30C14 30 9 33 9 33V30Z" fill="var(--gold)"/></svg>
+        Ulsav
+      </a>
+    </div>
+
+    <div class="promo-bottom">
+      <div class="rule"></div>
+      <h1>Every account carries a season's worth of celebration.</h1>
+      <p>Sign in to review your event timeline, vendor bookings and the run-of-show for your upcoming pooram, wedding or launch.</p>
+    </div>
+  </div>
+
+  <div class="form-panel">
+    <div class="form-card">
+      <a class="back" href="Ulsav.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        Back to home
+      </a>
+
+      <svg class="lamp" viewBox="0 0 46 46" fill="none">
+        <ellipse cx="23" cy="34" rx="16" ry="6" fill="#B8862F"/>
+        <path d="M9 34C9 34 12 26 23 26C34 26 37 34 37 34" stroke="#B8862F" stroke-width="2.5" fill="none"/>
+        <path id="flame" d="M23 10C27 16 29 19 29 23C29 27.4 26.3 30 23 30C19.7 30 17 27.4 17 23C17 19 19 16 23 10Z" fill="#D8531F"/>
+      </svg>
+
+      <h2>Welcome back</h2>
+      <p class="subhead">Sign in to manage your event with us.</p>
+
+<form id="loginForm" novalidate>
+        <div class="field">
+          <label for="email">Email address</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" required>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="••••••••" required>
+        </div>
+        <div class="field-row">
+          <label><input type="checkbox" id="remember"> Remember me</label>
+          <a href="#">Forgot password?</a>
+        </div>
+        <button type="submit" class="btn-submit">Log in</button>
+        <div class="status-msg" id="statusMsg">The lamp is lit — checking your details is handled by your backend once connected.</div>
+      </form>
+
+      <div class="divider">OR</div>
+      <p class="signup-line">New to Ulsav? <a href="register.html">Create an account</a></p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Parallax layers via scroll AND mouse movement
+  var layers = Array.prototype.slice.call(document.querySelectorAll('.p-layer[data-speed]'));
+  
+  // Scroll parallax
+  function onScrollParallax(){
+    if(reduceMotion) return;
+    var y = window.scrollY;
+    layers.forEach(function(l){
+      var speed = parseFloat(l.getAttribute('data-speed'));
+      l.style.transform = 'translateY(' + (y*speed) + 'px)';
+    });
+  }
+  window.addEventListener('scroll', onScrollParallax, {passive:true});
+  onScrollParallax();
+
+  // Mouse move parallax for subtle depth
+  document.addEventListener('mousemove', function(e) {
+    if(reduceMotion) return;
+    var centerX = window.innerWidth / 2;
+    var centerY = window.innerHeight / 2;
+    var offsetX = (e.clientX - centerX) / centerX;
+    var offsetY = (e.clientY - centerY) / centerY;
+    
+    layers.forEach(function(l){
+      var depth = parseFloat(l.getAttribute('data-depth')) || 0.02;
+      var moveX = offsetX * 60 * depth;
+      var moveY = offsetY * 60 * depth;
+      // Apply only the mouse translation, but preserve scroll transform (via CSS variable)
+      l.style.transform = `translate(${moveX}px, ${moveY}px)`;
+    });
+  });
+
+  // Stars
+  var starsLayer = document.getElementById('loginStars');
+  if(starsLayer){
+    for(var i=0;i<28;i++){
+      var s = document.createElement('div');
+      s.className = 'star';
+      s.style.left = (Math.random()*100)+'%';
+      s.style.top = (Math.random()*100)+'%';
+      s.style.animationDelay = (Math.random()*3.5)+'s';
+      starsLayer.appendChild(s);
+    }
+  }
+
+  // Embers
+  var embersLayer = document.getElementById('loginEmbers');
+  if(embersLayer && !reduceMotion){
+    for(var j=0;j<14;j++){
+      var e = document.createElement('div');
+      e.className = 'ember';
+      e.style.left = (Math.random()*100)+'%';
+      e.style.setProperty('--drift', (Math.random()*50-25)+'px');
+      e.style.animationDuration = (5+Math.random()*5)+'s';
+      e.style.animationDelay = (Math.random()*6)+'s';
+      embersLayer.appendChild(e);
+    }
+  }
+
+  // Lamp flame flicker animation using JS for subtle random movement
+  if(!reduceMotion) {
+    const flame = document.getElementById('flame');
+    if(flame) {
+      setInterval(() => {
+        const scaleX = 1 + (Math.random() - 0.5) * 0.1;
+        const scaleY = 1 + (Math.random() - 0.5) * 0.12;
+        flame.style.transform = `scale(${scaleX}, ${scaleY})`;
+        flame.style.transformOrigin = 'center bottom';
+      }, 200);
+    }
+  }
+
+})();
+
+document.addEventListener('DOMContentLoaded', function() {
+  var form = document.getElementById('loginForm');
+  
+  if (form) {
+    form.addEventListener('submit', function(ev) {
+      ev.preventDefault();
+      
+      var emailInput = document.getElementById('email');
+      var email = emailInput ? emailInput.value.toLowerCase() : '';
+      
+      var accountType = 'user';
+      if (email.includes('admin')) {
+        accountType = 'admin';
+      } else if (email.includes('artist') || email.includes('collab')) {
+        accountType = 'collaborator';
+      }
+
+      var userName = email.split('@')[0] || 'User';
+
+      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('accountType', accountType);
+      localStorage.setItem('userName', userName);
+
+      window.location.href = 'Ulsav.html';
+    });
+  }
+});
+</script>
+</body>
+</html>

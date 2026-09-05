@@ -1,0 +1,645 @@
+<!-- ============================================================
+     FILE: booking&bid.html  (Main Listing Page)
+     ============================================================ -->
+     <!DOCTYPE html>
+     <html lang="en">
+     <head>
+         <meta charset="UTF-8" />
+         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+         <title>Pooram Events — Programs, Categories &amp; Bidding</title>
+         <!-- Tailwind CSS -->
+         <script src="https://cdn.tailwindcss.js">
+         </script>
+         <!-- Google Fonts -->
+         <link rel="preconnect" href="https://fonts.googleapis.com" />
+         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+         <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+         <style>
+             /* ---------- Base ---------- */
+             body {
+                 font-family: 'Plus Jakarta Sans', sans-serif;
+                 background-color: #0b0908;
+                 color: #d6d3d1;
+             }
+             .font-serif-heading {
+                 font-family: 'Cormorant Garamond', serif;
+             }
+             .bg-saffron {
+                 background-color: #e05a2b;
+             }
+             .text-saffron {
+                 color: #e05a2b;
+             }
+             .border-saffron {
+                 border-color: #e05a2b;
+             }
+             .hero-glow {
+                 background: radial-gradient(circle at 50% 20%, rgba(224, 90, 43, 0.12) 0%, rgba(11, 9, 8, 0) 70%);
+             }
+             .category-pill {
+                 transition: all 0.2s ease;
+                 cursor: pointer;
+             }
+             .category-pill:hover {
+                 border-color: #e05a2b;
+                 color: #fff;
+             }
+             .category-pill.active {
+                 background-color: #e05a2b;
+                 border-color: #e05a2b;
+                 color: #fff;
+             }
+             .event-card {
+                 transition: all 0.3s ease;
+                 cursor: pointer;
+             }
+             .event-card:hover {
+                 border-color: #e05a2b;
+                 transform: translateY(-4px);
+                 box-shadow: 0 12px 40px rgba(224, 90, 43, 0.08);
+             }
+             .event-card.hidden-card {
+                 display: none;
+             }
+             .bid-progress-bar {
+                 height: 4px;
+                 background: #2a2522;
+                 border-radius: 10px;
+                 overflow: hidden;
+             }
+             .bid-progress-fill {
+                 height: 100%;
+                 background: linear-gradient(90deg, #e05a2b, #f07a4a);
+                 border-radius: 10px;
+                 transition: width 0.6s ease;
+             }
+             ::-webkit-scrollbar {
+                 width: 6px;
+             }
+             ::-webkit-scrollbar-track {
+                 background: #1a1614;
+             }
+             ::-webkit-scrollbar-thumb {
+                 background: #e05a2b;
+                 border-radius: 10px;
+             }
+
+             /* empty state */
+             .empty-state {
+                 grid-column: 1 / -1;
+                 text-align: center;
+                 padding: 4rem 1rem;
+                 color: #6b6561;
+             }
+             .empty-state .big-icon {
+                 font-size: 4rem;
+                 display: block;
+                 margin-bottom: 1rem;
+             }
+             .empty-state a {
+                 color: #e05a2b;
+                 text-decoration: underline;
+             }
+         </style>
+     </head>
+     <body class="min-h-screen hero-glow bg-[#0b0908] selection:bg-[#e05a2b] selection:text-white pb-20">
+
+         <!-- ===== NAVIGATION ===== -->
+         <header class="flex items-center justify-between px-8 py-6 max-w-7xl mx-auto border-b border-stone-800/60">
+             <a href="#" class="flex items-center gap-3 text-lg font-medium text-stone-200">
+                 <span class="inline-block w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[10px] border-b-[#e05a2b]"></span>
+                 <span>Pooram Events</span>
+             </a>
+             <nav class="flex items-center gap-6 text-sm text-stone-400">
+                 <a href="#events" class="hover:text-white transition">Events</a>
+                 <a href="#bidding" class="hover:text-white transition">Live Bidding</a>
+                 <a href="Ulsav.html" class="hover:text-white transition">Back</a>
+                 <a href="ulsav%20userpage.html" class="px-4 py-1.5 rounded-full border border-saffron text-saffron text-xs hover:bg-saffron hover:text-white transition">+ List Your Art</a>
+             </nav>
+         </header>
+
+         <!-- ===== TITLE BANNER ===== -->
+         <section class="text-center my-12 px-6">
+             <p class="text-[11px] uppercase tracking-[0.3em] text-saffron font-medium mb-2">Kerala Festival Management</p>
+             <h1 class="font-serif-heading text-4xl md:text-6xl text-stone-100">Explore, Bid &amp; Book</h1>
+             <p class="text-sm text-stone-400 mt-3 max-w-xl mx-auto">
+                 Discover festival programs across categories — from grand poorams to intimate weddings.
+                 <span class="block text-xs text-stone-500 mt-1">Artists: <a href="ulsav%20userpage.html" class="text-saffron hover:underline">register your profile</a> to appear here.</span>
+             </p>
+         </section>
+
+         <!-- ============================================================ -->
+         <!-- ===== SECTION: CATEGORY FILTERS + EVENTS GRID ===== -->
+         <!-- ============================================================ -->
+         <section id="events" class="max-w-7xl mx-auto px-6 mb-16">
+
+             <!-- Category Pills -->
+             <div class="flex flex-wrap gap-2.5 mb-10 border-b border-stone-800/60 pb-6">
+                 <button data-category="all" class="category-pill active px-5 py-2 rounded-full border border-stone-700 text-xs font-medium text-stone-300 tracking-wide">🏷️ All</button>
+                 <button data-category="pooram" class="category-pill px-5 py-2 rounded-full border border-stone-700 text-xs font-medium text-stone-300 tracking-wide">🐘 Grand Pooram</button>
+                 <button data-category="melam" class="category-pill px-5 py-2 rounded-full border border-stone-700 text-xs font-medium text-stone-300 tracking-wide">🥁 Chenda Melam</button>
+                 <button data-category="fireworks" class="category-pill px-5 py-2 rounded-full border border-stone-700 text-xs font-medium text-stone-300 tracking-wide">🎆 Fireworks</button>
+                 <button data-category="kudamattam" class="category-pill px-5 py-2 rounded-full border border-stone-700 text-xs font-medium text-stone-300 tracking-wide">🌸 Kudamattam</button>
+                 <button data-category="wedding" class="category-pill px-5 py-2 rounded-full border border-stone-700 text-xs font-medium text-stone-300 tracking-wide">💍 Wedding</button>
+                 <button data-category="corporate" class="category-pill px-5 py-2 rounded-full border border-stone-700 text-xs font-medium text-stone-300 tracking-wide">🏢 Corporate</button>
+             </div>
+
+             <!-- Header -->
+             <div class="flex justify-between items-end mb-8 border-b border-stone-800 pb-4">
+                 <div>
+                     <h2 class="font-serif-heading text-3xl text-stone-100">Featured Offerings</h2>
+                     <p class="text-xs text-stone-400 mt-1">Select a category above to filter programs</p>
+                 </div>
+                 <span id="eventCount" class="text-xs tracking-widest text-stone-500 uppercase">0 Programs</span>
+             </div>
+
+             <!-- Event Cards Grid -->
+             <div id="eventsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                 <!-- Cards will be injected by JavaScript -->
+             </div>
+         </section>
+
+         <!-- ============================================================ -->
+         <!-- ===== SECTION: LIVE BIDDING DASHBOARD ===== -->
+         <!-- ============================================================ -->
+         <section id="bidding" class="max-w-7xl mx-auto px-6 mb-16">
+             <div class="bg-stone-900/40 border border-stone-800 rounded-2xl p-8 md:p-10 shadow-2xl relative overflow-hidden">
+                 <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+                     <div>
+                         <h2 class="font-serif-heading text-3xl text-stone-100">🔥 Live Bidding</h2>
+                         <p class="text-xs text-stone-400 mt-1">Place your bid on premium festival programs. Highest bid wins.</p>
+                     </div>
+                     <span class="text-xs text-saffron font-medium bg-stone-800/60 px-4 py-1.5 rounded-full border border-stone-700" id="bidCount">0 active auctions</span>
+                 </div>
+
+                 <!-- Bidding Grid -->
+                 <div id="biddingGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                     <!-- Bidding cards injected by JS -->
+                 </div>
+
+                 <p class="text-[10px] text-stone-500 mt-6 text-center tracking-wider">All bids are binding. Winner will be notified via email &amp; phone within 30 minutes of auction close.</p>
+             </div>
+         </section>
+
+         <!-- ===== FOOTER ===== -->
+         <footer class="max-w-7xl mx-auto px-6 mt-20 pt-8 border-t border-stone-800/60 text-center text-xs text-stone-500">
+             <p>&copy; 2026 Pooram Events — Kerala Festival Management. Crafted with <span class="text-saffron">❤</span> in God's Own Country.</p>
+         </footer>
+
+         <!-- ============================================================ -->
+         <!-- ===== JAVASCRIPT: Data Store + Rendering ===== -->
+         <!-- ============================================================ -->
+         <script>
+             (function() {
+                 'use strict';
+
+                 // ---------- DATA LAYER (localStorage mock) ----------
+                 const STORAGE_KEY = 'pooramEvents';
+
+                 // -------- Default seed data (if store is empty) --------
+                 const DEFAULT_EVENTS = [{
+                     id: 'evt_001',
+                     artistName: 'Sreedharan Marar & Ensemble',
+                     category: 'melam',
+                     title: 'Panchari & Pandi Melam',
+                     description: 'High-energy traditional percussion ensembles featuring top Kerala artists for weddings and inaugurals.',
+                     price: 120000,
+                     imageEmoji: '🥁',
+                     rating: 4.9,
+                     reviews: 128,
+                     isBidding: true,
+                     currentBid: 185000,
+                     bidsPlaced: 9,
+                     targetBid: 220000,
+                     timeLeft: '5h 32m',
+                     // extra details for booking page
+                     teamSize: '15 to 60 Performing Artists',
+                     styles: 'Panchari, Pandi, Ilanjithara Style',
+                     equipment: 'Chenda, Elathalam, Kombu, Kuzhal',
+                     travelRadius: 'All Districts & Inter-State',
+                     bio: 'Led by veteran Chenda Master Sreedharan Marar, this 45-member traditional percussion guild has performed at major temple poorams across Kerala, including Thrissur Pooram and Arattupuzha Pooram. The ensemble brings full traditional attire (Kachapuram and Melmundu), calibrated brass cymbals (Elathalam), and traditional horns (Kombu). Ideal for high-profile weddings, temple festivals, and cultural inauguration ceremonies.',
+                     location: 'Thrissur, Kerala',
+                     availability: 'Available for Statewide & Destination Events'
+                 }, {
+                     id: 'evt_002',
+                     artistName: 'Thrissur Pooram Pageantry',
+                     category: 'pooram',
+                     title: 'Caparisoned Elephants',
+                     description: 'Traditional majestic elephant line-ups with nettipattam, decorative umbrellas & full temple ensemble.',
+                     price: 420000,
+                     imageEmoji: '🐘',
+                     rating: 4.8,
+                     reviews: 96,
+                     isBidding: true,
+                     currentBid: 420000,
+                     bidsPlaced: 18,
+                     targetBid: 550000,
+                     timeLeft: '2h 14m',
+                     teamSize: '10 Elephants + 30 Attendants',
+                     styles: 'Traditional Temple Pageantry',
+                     equipment: 'Nettipattam, Venchamaram, Aalavattam',
+                     travelRadius: 'Within Kerala',
+                     bio: 'Experience the grandeur of Kerala\'s temple festivals with our elephant pageantry service. We provide caparisoned elephants with full traditional decorations including nettipattam (golden forehead ornament), venchamaram (fly-whisks), and aalavattam (peacock feather fans). Perfect for temple festivals, weddings, and grand processions.',
+                     location: 'Thrissur, Kerala',
+                     availability: 'Available for select dates'
+                 }, {
+                     id: 'evt_003',
+                     artistName: 'Grand Pyrotechnics Co.',
+                     category: 'fireworks',
+                     title: 'Grand Pyrotechnics',
+                     description: 'Precision temple-style fireworks with aerial shells, ground spinners & full safety certification.',
+                     price: 360000,
+                     imageEmoji: '🎆',
+                     rating: 4.7,
+                     reviews: 84,
+                     isBidding: true,
+                     currentBid: 360000,
+                     bidsPlaced: 24,
+                     targetBid: 400000,
+                     timeLeft: '1h 06m',
+                     teamSize: '12 Pyrotechnicians',
+                     styles: 'Temple-style Fireworks, Aerial Shells',
+                     equipment: 'Mortars, Shells, Ground Spinners, Safety Gear',
+                     travelRadius: 'All Kerala & Neighbouring States',
+                     bio: 'Over 20 years of experience in temple-style fireworks displays. Our team is certified and insured, specializing in synchronized aerial shows, ground spinners, and traditional temple fireworks. We prioritize safety and spectacle in equal measure.',
+                     location: 'Palakkad, Kerala',
+                     availability: 'Available year-round'
+                 }, {
+                     id: 'evt_004',
+                     artistName: 'Kudamattam Masters',
+                     category: 'kudamattam',
+                     title: 'Kudamattam Display',
+                     description: 'Fast-paced, colourful sequined umbrella exchange choreography tailored for grand cultural shows.',
+                     price: 240000,
+                     imageEmoji: '🌸',
+                     rating: 4.6,
+                     reviews: 62,
+                     isBidding: false,
+                     currentBid: null,
+                     bidsPlaced: null,
+                     targetBid: null,
+                     timeLeft: null,
+                     teamSize: '20 Umbrella Dancers',
+                     styles: 'Traditional Kudamattam Choreography',
+                     equipment: 'Sequined Umbrellas, Traditional Attire',
+                     travelRadius: 'All Kerala',
+                     bio: 'Specializing in the vibrant and fast-paced art of Kudamattam — the synchronized exchange of colourful umbrellas. Our troupe has performed at major temple festivals and cultural events across Kerala. The performance is a visual treat with precise choreography and dazzling colours.',
+                     location: 'Ernakulam, Kerala',
+                     availability: 'Available for bookings'
+                 }, {
+                     id: 'evt_005',
+                     artistName: 'Nair Wedding Ensemble',
+                     category: 'wedding',
+                     title: 'Grand Kerala Wedding',
+                     description: 'Full wedding package with elephant arrival, chenda melam, floral décor & traditional sadhya feast.',
+                     price: 675000,
+                     imageEmoji: '💍',
+                     rating: 4.9,
+                     reviews: 210,
+                     isBidding: false,
+                     currentBid: null,
+                     bidsPlaced: null,
+                     targetBid: null,
+                     timeLeft: null,
+                     teamSize: '30+ Wedding Professionals',
+                     styles: 'Traditional Kerala Wedding',
+                     equipment: 'Decor, Catering, Performers',
+                     travelRadius: 'All Kerala & Interstate',
+                     bio: 'Complete wedding planning and execution with a focus on traditional Kerala wedding ceremonies. We provide elephant arrival, chenda melam, floral decorations, and authentic sadhya feast. Our team ensures every detail reflects the rich cultural heritage of Kerala weddings.',
+                     location: 'Kozhikode, Kerala',
+                     availability: 'Book 3 months in advance'
+                 }, {
+                     id: 'evt_006',
+                     artistName: 'Corporate Gala Arts',
+                     category: 'corporate',
+                     title: 'Corporate Festival Gala',
+                     description: 'High-end corporate event with Kerala festival elements — elephants, melam, and curated cultural acts.',
+                     price: 520000,
+                     imageEmoji: '🏢',
+                     rating: 4.5,
+                     reviews: 43,
+                     isBidding: false,
+                     currentBid: null,
+                     bidsPlaced: null,
+                     targetBid: null,
+                     timeLeft: null,
+                     teamSize: '20+ Performers & Coordinators',
+                     styles: 'Corporate Event Management',
+                     equipment: 'Stage, Sound, Decor',
+                     travelRadius: 'All India',
+                     bio: 'We bring the magic of Kerala festivals to corporate events. Our team curates a blend of traditional performances including elephants, chenda melam, and cultural acts that create a memorable experience for your guests. Perfect for company milestones, product launches, and client entertainment.',
+                     location: 'Kochi, Kerala',
+                     availability: 'Available on request'
+                 }];
+
+                 // -------- Helper: load from storage or seed --------
+                 function loadEvents() {
+                     const stored = localStorage.getItem(STORAGE_KEY);
+                     if (stored) {
+                         try {
+                             const parsed = JSON.parse(stored);
+                             if (Array.isArray(parsed) && parsed.length > 0) {
+                                 return parsed;
+                             }
+                         } catch (_) { /* ignore */ }
+                     }
+                     // Seed default data
+                     localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_EVENTS));
+                     return DEFAULT_EVENTS;
+                 }
+
+                 function saveEvents(events) {
+                     localStorage.setItem(STORAGE_KEY, JSON.stringify(events));
+                 }
+
+                 // -------- Get a single event by ID --------
+                 function getEventById(id) {
+                     const all = loadEvents();
+                     return all.find(e => e.id === id) || null;
+                 }
+
+                 // -------- Category filter logic --------
+                 function getCategoryFromCard(card) {
+                     return card.getAttribute('data-category') || 'all';
+                 }
+
+                 // ---------- RENDER CARDS ----------
+                 function renderAllCards() {
+                     const events = loadEvents();
+                     const grid = document.getElementById('eventsGrid');
+                     const countEl = document.getElementById('eventCount');
+                     const biddingGrid = document.getElementById('biddingGrid');
+                     const bidCountEl = document.getElementById('bidCount');
+
+                     if (!grid) return;
+
+                     // Filter out any active filter
+                     const activePill = document.querySelector('.category-pill.active');
+                     const currentFilter = activePill ? activePill.getAttribute('data-category') : 'all';
+
+                     // Build HTML for event cards
+                     let html = '';
+                     let visibleCount = 0;
+                     let biddingItems = [];
+
+                     events.forEach((evt, index) => {
+                         // Determine if this event matches the filter
+                         const matchesFilter = (currentFilter === 'all' || evt.category === currentFilter);
+                         if (!matchesFilter) {
+                             // Still need to track for bidding but hide card
+                             if (evt.isBidding) {
+                                 biddingItems.push(evt);
+                             }
+                             return;
+                         }
+
+                         visibleCount++;
+
+                         // Card classes
+                         const cardClasses =
+                             'event-card bg-stone-900/40 border border-stone-800 rounded-xl p-5 flex flex-col justify-between';
+                         const hiddenClass = ''; // all visible by default
+
+                         // Badge for bidding / available
+                         let badgeHtml = '';
+                         if (evt.isBidding) {
+                             badgeHtml =
+                                 `<span class="absolute top-3 left-3 bg-saffron text-[10px] font-bold px-3 py-1 rounded-full text-white uppercase tracking-wider">🔥 Bidding</span>`;
+                         } else {
+                             badgeHtml =
+                                 `<span class="absolute top-3 left-3 bg-emerald-700 text-[10px] font-bold px-3 py-1 rounded-full text-white uppercase tracking-wider">Available</span>`;
+                         }
+
+                         // Bid section for bidding cards
+                         let bidSectionHtml = '';
+                         if (evt.isBidding) {
+                             const progress = evt.targetBid ? Math.min((evt.currentBid / evt.targetBid) * 100, 100) : 0;
+                             bidSectionHtml = `
+                                <div class="mt-4 pt-4 border-t border-stone-800/60">
+                                    <div class="flex justify-between text-xs">
+                                        <span class="text-stone-400">Current bid</span>
+                                        <span class="text-stone-100 font-semibold">₹${Number(evt.currentBid).toLocaleString('en-IN')}</span>
+                                    </div>
+                                    <div class="flex justify-between text-xs mt-1">
+                                        <span class="text-stone-400">Bids placed</span>
+                                        <span class="text-stone-300">${evt.bidsPlaced || 0}</span>
+                                    </div>
+                                    <div class="bid-progress-bar mt-2">
+                                        <div class="bid-progress-fill" style="width:${progress}%;"></div>
+                                    </div>
+                                    <div class="flex justify-between text-[10px] text-stone-500 mt-1">
+                                        <span>Target: ₹${(evt.targetBid || 0).toLocaleString('en-IN')}</span>
+                                        <span>${evt.timeLeft || '—'}</span>
+                                    </div>
+                                </div>
+                            `;
+                         } else {
+                             bidSectionHtml = `
+                                <div class="mt-4 pt-4 border-t border-stone-800/60">
+                                    <span class="text-xs text-stone-400">Starting at</span>
+                                    <span class="text-stone-100 font-semibold block text-lg">₹${Number(evt.price).toLocaleString('en-IN')}</span>
+                                </div>
+                            `;
+                         }
+
+                         // Buttons
+                         let btnHtml = '';
+                         if (evt.isBidding) {
+                             btnHtml = `
+                                <div class="mt-5 flex gap-2">
+                                    <a href="booking.html?id=${evt.id}" class="flex-1 text-center text-xs py-2.5 rounded bg-saffron text-white border border-saffron hover:bg-[#c94d22] transition font-medium">Place Bid</a>
+                                    <a href="booking.html?id=${evt.id}" class="flex-1 text-center text-xs py-2.5 rounded bg-stone-800/80 text-stone-200 border border-stone-700 hover:border-stone-500 transition">Book Direct</a>
+                                </div>
+                            `;
+                         } else {
+                             btnHtml = `
+                                <a href="booking.html?id=${evt.id}" class="mt-5 block text-center text-xs py-2.5 rounded bg-stone-800/80 text-stone-200 border border-stone-700 hover:border-saffron hover:bg-saffron hover:text-white transition">Book This Program</a>
+                            `;
+                         }
+
+                         // Build the card
+                         html += `
+                            <div class="${cardClasses}" data-category="${evt.category}" data-id="${evt.id}">
+                                <div>
+                                    <div class="w-full h-40 bg-stone-800 rounded-lg mb-4 flex items-center justify-center text-stone-600 text-xs tracking-wider uppercase border border-stone-700/40 relative overflow-hidden">
+                                        ${badgeHtml}
+                                        <span class="text-5xl">${evt.imageEmoji || '🎭'}</span>
+                                        <span class="absolute bottom-2 right-3 text-[10px] text-stone-500">${evt.artistName || 'Artist'}</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="text-[10px] uppercase tracking-widest text-saffron font-semibold">${evt.category || 'General'}</span>
+                                        <span class="text-[10px] text-stone-500">•</span>
+                                        <span class="text-[10px] text-stone-500">${evt.rating ? '★ ' + evt.rating : ''} ${evt.reviews ? '(' + evt.reviews + ')' : ''}</span>
+                                    </div>
+                                    <h3 class="font-serif-heading text-2xl text-stone-100 mt-1 mb-2">${evt.title || 'Untitled'}</h3>
+                                    <p class="text-xs text-stone-400 leading-relaxed">${evt.description || ''}</p>
+                                    ${bidSectionHtml}
+                                </div>
+                                ${btnHtml}
+                            </div>
+                        `;
+
+                         // Collect bidding items for the bidding section
+                         if (evt.isBidding) {
+                             biddingItems.push(evt);
+                         }
+                     });
+
+                     // If no events match, show empty state
+                     if (visibleCount === 0) {
+                         html = `
+                            <div class="empty-state">
+                                <span class="big-icon">🎭</span>
+                                <p class="text-stone-400">No programs in this category yet.</p>
+                                <p class="text-xs text-stone-500 mt-2">Artists: <a href="ulsav%20userpage.html" class="text-saffron hover:underline">register your profile</a> to get listed.</p>
+                            </div>
+                        `;
+                     }
+
+                     grid.innerHTML = html;
+                     countEl.textContent = visibleCount + ' Program' + (visibleCount !== 1 ? 's' : '');
+
+                     // ---- Render Bidding Section ----
+                     renderBiddingItems(biddingItems, bidCountEl);
+
+                     // ---- Re-apply click listeners for cards (delegated) ----
+                     // We use href on the links, so no extra wiring needed.
+
+                     // ---- Re-apply category filter on card clicks (delegated) ----
+                 }
+
+                 // ---------- Render Bidding Section ----------
+                 function renderBiddingItems(biddingItems, countEl) {
+                     const grid = document.getElementById('biddingGrid');
+                     if (!grid) return;
+
+                     if (biddingItems.length === 0) {
+                         grid.innerHTML = `
+                            <div class="col-span-3 text-center text-stone-500 py-8 text-sm">
+                                No active auctions at the moment. Check back soon!
+                            </div>
+                        `;
+                         if (countEl) countEl.textContent = '0 active auctions';
+                         return;
+                     }
+
+                     let html = '';
+                     biddingItems.forEach(evt => {
+                         const progress = evt.targetBid ? Math.min((evt.currentBid / evt.targetBid) * 100, 100) : 0;
+                         const isHot = (evt.bidsPlaced || 0) > 15;
+                         const hotBadge = isHot ?
+                             `<span class="text-[10px] bg-saffron/20 text-saffron px-3 py-1 rounded-full font-semibold uppercase tracking-wider">Hot</span>` :
+                             `<span class="text-[10px] bg-stone-700/40 text-stone-300 px-3 py-1 rounded-full font-semibold uppercase tracking-wider">Active</span>`;
+
+                         html += `
+                            <div class="bg-stone-950/60 border border-stone-800 rounded-xl p-5 hover:border-saffron/40 transition">
+                                <div class="flex justify-between items-start">
+                                    <h4 class="font-serif-heading text-xl text-stone-100">${evt.title || 'Untitled'}</h4>
+                                    ${hotBadge}
+                                </div>
+                                <div class="flex justify-between text-xs mt-3 text-stone-400">
+                                    <span><i class="inline-block w-2 h-2 bg-saffron rounded-full mr-1.5"></i> ${evt.bidsPlaced || 0} bids</span>
+                                    <span>⏱ ${evt.timeLeft || '—'}</span>
+                                </div>
+                                <div class="mt-3 flex items-end justify-between">
+                                    <div>
+                                        <span class="text-[10px] text-stone-500">Current bid</span>
+                                        <div class="text-lg font-semibold text-stone-100">₹${Number(evt.currentBid).toLocaleString('en-IN')}</div>
+                                    </div>
+                                    <span class="text-xs text-stone-400">+ ₹${Math.round(evt.currentBid * 0.05).toLocaleString('en-IN')}</span>
+                                </div>
+                                <div class="bid-progress-bar mt-3">
+                                    <div class="bid-progress-fill" style="width:${progress}%;"></div>
+                                </div>
+                                <div class="mt-4 flex gap-2">
+                                    <input type="text" placeholder="₹ ${(evt.currentBid + Math.round(evt.currentBid * 0.05)).toLocaleString('en-IN')}" 
+                                           class="bid-input flex-1 bg-stone-900 border border-stone-700 rounded-lg px-3 py-2 text-xs text-stone-200 placeholder-stone-500 focus:border-saffron">
+                                    <button class="bg-saffron hover:bg-[#c94d22] text-white text-xs font-medium px-4 py-2 rounded-lg transition bid-btn" 
+                                            data-id="${evt.id}">Bid</button>
+                                </div>
+                            </div>
+                        `;
+                     });
+
+                     grid.innerHTML = html;
+                     if (countEl) countEl.textContent = biddingItems.length + ' active auctions';
+
+                     // Wire up bid buttons
+                     grid.querySelectorAll('.bid-btn').forEach(btn => {
+                         btn.addEventListener('click', function(e) {
+                             e.preventDefault();
+                             const input = this.closest('.flex').querySelector('input');
+                             if (input) {
+                                 const val = input.value.trim();
+                                 if (val && val.length > 2) {
+                                     alert('🎉 Your bid of ' + val + ' has been placed!');
+                                     input.value = '';
+                                 } else {
+                                     alert('Please enter a valid bid amount (e.g., ₹4,40,000).');
+                                 }
+                             } else {
+                                 alert('Bid placed!');
+                             }
+                         });
+                     });
+                 }
+
+                 // ---------- Category Filter ----------
+                 function setupCategoryFilter() {
+                     const pills = document.querySelectorAll('.category-pill');
+                     pills.forEach(pill => {
+                         pill.addEventListener('click', function() {
+                             pills.forEach(p => p.classList.remove('active'));
+                             this.classList.add('active');
+                             renderAllCards();
+                         });
+                     });
+                 }
+
+                 // ---------- Storage listener (cross-tab sync) ----------
+                 function setupStorageListener() {
+                     window.addEventListener('storage', function(e) {
+                         if (e.key === STORAGE_KEY) {
+                             renderAllCards();
+                         }
+                     });
+                 }
+
+                 // ---------- Init ----------
+                 function init() {
+                     // Seed data if needed
+                     loadEvents();
+                     renderAllCards();
+                     setupCategoryFilter();
+                     setupStorageListener();
+
+                     // Handle "Place Bid" and "Book Direct" clicks on cards (delegated)
+                     document.addEventListener('click', function(e) {
+                         const target = e.target.closest('a[href^="booking.html"]');
+                         if (target) {
+                             // The href already has the ID, nothing else to do.
+                             // But we can add a small analytics log if needed.
+                             console.log('Navigating to:', target.getAttribute('href'));
+                         }
+                     });
+
+                     console.log('🔥 Pooram Events — Data-driven listing ready.');
+                     console.log('📦 Total events in store:', loadEvents().length);
+                 }
+
+                 // Expose for debugging
+                 window.__pooram = { loadEvents, getEventById, saveEvents, renderAllCards };
+
+                 // Run on DOM ready
+                 if (document.readyState === 'loading') {
+                     document.addEventListener('DOMContentLoaded', init);
+                 } else {
+                     init();
+                 }
+
+             })();
+         </script>
+
+     </body>
+     </html>
