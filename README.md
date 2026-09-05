@@ -32,18 +32,21 @@ Utsavam Events is a static event-management prototype inspired by Kerala's Poora
 
 ## Run Locally
 
-This project does not require a build tool or package installation. Open [Ulsav.html](Ulsav.html) directly in a browser, or serve the folder with a local static server:
+The landing page is now a React client backed by an Express API and MongoDB. Install Node.js 20+ and Docker Desktop, then run:
 
-```powershell
-python -m http.server 8000
+```bash
+npm install
+docker compose up -d mongodb
+npm run dev
 ```
 
-Then visit <http://localhost:8000/Ulsav.html>.
+Visit <http://localhost:5173>. The API seeds the landing-page content into MongoDB on startup and serves it from `http://localhost:4000/api/content`. The Mongo Express dashboard is available at <http://localhost:8081>.
 
 ## Notes
 
-- The project is currently a front-end prototype made with HTML, CSS, and browser JavaScript.
-- Forms, authentication, bookings, bids, and dashboards use demo client-side behavior; no production backend or database is configured.
+- The React landing page lives in `src/`; the MongoDB content API lives in `server/`.
+- The older HTML pages remain available as prototype screens while they are migrated.
+- Forms, authentication, bookings, bids, and dashboards still use demo client-side behavior; only landing-page content is currently database-backed.
 - Some pages load fonts and icons from external CDNs, so an internet connection improves the local preview.
 
 ## License

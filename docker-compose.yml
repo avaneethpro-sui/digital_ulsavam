@@ -1,4 +1,16 @@
 services:
+  app:
+    build: .
+    container_name: utsavam-app
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+    ports:
+      - "5173:4000"
+    environment:
+      PORT: 4000
+      MONGO_URI: mongodb://admin:admin@mongodb:27017/utsavam?authSource=admin
+
   mongodb:
     image: mongo:latest
     container_name: mongodb
