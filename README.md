@@ -27,6 +27,7 @@ Utsavam Events is a static event-management prototype inspired by Kerala's Poora
 | [Ulsav login.html](Ulsav%20login.html) | Login page |
 | [ulsav userpage.html](ulsav%20userpage.html) | Artist dashboard |
 | [ulsav admin.html](ulsav%20admin.html) | Admin dashboard |
+| [admin-data.json](admin-data.json) | MongoDB-ready seed document for admin bookings, artists, and dashboard metrics |
 | [ulsav managment.css](ulsav%20managment.css) | Shared styles for dashboard and form pages |
 
 ## Run Locally

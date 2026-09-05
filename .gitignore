@@ -1,0 +1,6 @@
+# Local MongoDB database files
+/data/
+
+# Local data exports and backups
+/admin-data.json
+/*.archive.gz
