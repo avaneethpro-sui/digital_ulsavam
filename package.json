@@ -7,7 +7,6 @@
     "dev": "concurrently \"npm:server\" \"npm:client\"",
     "client": "vite",
     "server": "node server/index.js",
-    "seed": "node server/seed.js",
     "build": "vite build",
     "preview": "vite preview"
   },
